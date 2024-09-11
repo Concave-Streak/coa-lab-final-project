@@ -13,21 +13,25 @@ module REG_BANK (
 
     reg [31:0] registers [0:15]; // Register array
 
-    integer i;
-    initial begin
-        // Initialize all registers to 0
-        for (i = 0; i < 16; i = i + 1) begin
-            registers[i] = 32'd0;
-        end
-    end
-
     // Writing to registers on the positive edge of the clock
     always @(posedge clk or posedge rst_n) begin
         if (rst_n) begin
-            // If reset is active, initialize all registers to 0
-            for (i = 0; i < 16; i = i + 1) begin
-                registers[i] <= 32'd0;
-            end
+            registers[0] <= 0;
+            registers[1] <= 0;
+            registers[2] <= 2;
+            registers[3] <= 349;
+            registers[4] <= 0;
+            registers[5] <= 0;
+            registers[6] <= 0;
+            registers[7] <= 0;
+            registers[8] <= 0;
+            registers[9] <= 0;
+            registers[10] <= 0;
+            registers[11] <= 0;
+            registers[12] <= 0;
+            registers[13] <= 0;
+            registers[14] <= 0;
+            registers[15] <= 0;
         end else if (reg_write) begin
             if (rd != 4'd0 && rd != 4'd15) begin
                 registers[rd] <= write_data; // Write data to register if valid
@@ -44,6 +48,7 @@ module REG_BANK (
             r13_out <= 32'd0;
         end else begin
             // Read data from registers
+            registers[0] <= 0;
             data1 <= registers[rs1];  // Read from rs1 register
             data2 <= registers[rs2];  // Read from rs2 register
             r13_out <= registers[13]; // Read from register 13

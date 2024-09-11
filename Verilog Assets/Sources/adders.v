@@ -100,16 +100,16 @@ module cla_16(input [15:0] a, input [15:0] b, input c_in, output [15:0] s, outpu
        end
     endgenerate
 
-    assign c1 = g[0] | (p[0]&c_in);
-    assign c2 = g[1] | (p[1]&g[0]) | (p[1]&p[0]&c_in);
-    assign c3 = g[2] | (p[2]&g[1])| (p[2]&p[1]&g[0]) | (p[2]&p[1]&p[0]&c_in);
+    assign c[1] = g[0] | (p[0]&c_in);
+    assign c[2] = g[1] | (p[1]&g[0]) | (p[1]&p[0]&c_in);
+    assign c[3] = g[2] | (p[2]&g[1])| (p[2]&p[1]&g[0]) | (p[2]&p[1]&p[0]&c_in);
     assign c_out = g[3] | (p[3]&g[2]) | (p[3]&p[2]&g[1]) | (p[3]&p[2]&p[1]&g[0]) | (p[3]&p[2]&p[1]&p[0]&c_in);
 
 endmodule
 
 module rca_cla_32(input [31:0] a, input [31:0] b, input c_in, output [31:0] s, output c_out);
     cla_16 a0(a[15:0], b[15:0], c_in, s[15:0], carry);
-    cla_16 a1(a[31:15], b[31:15], c_in, s[31:15], carry);
+    cla_16 a1(a[31:16], b[31:16], carry, s[31:16], c_out);
 endmodule
 
 module add_sub_8 (

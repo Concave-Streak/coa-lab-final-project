@@ -47,7 +47,7 @@ module K_ALU_32(
     output [31:0] res,
     input [31:0] A,
     input [31:0] B,
-    input [31:0] sel
+    input [3:0] sel
 );
     
     wire [31:0] out_add, out_mul, out_div;
