@@ -26,11 +26,13 @@ module K_ALU(
     inc_dec_8 increment(A, B, sel[0], out_p4);
     _XOR ham_gate(out_ham, A, B);
     
+    wire [16*8-1:0] combined_outputs;
+    
     assign combined_outputs = { 
-        out_add, out_add, out_mul, out_div,
-        out_and, out_or, out_xor, out_not,
-        out_A, out_B, out_sll, out_srl,
-        out_sra, out_p4, out_p4, out_ham
+        out_ham, out_p4, out_p4, out_sra, 
+        out_srl, out_sll, out_B, out_A, 
+        out_not, out_xor, out_or, out_and, 
+        out_div, out_mul, out_add, out_add
     };
     
     // Multiplexer to select the result
@@ -67,13 +69,15 @@ module K_ALU_32(
     _SHIFT_RIGHTL_AbyB #32 srl_gate(out_srl, A, B);
     _SHIFT_RIGHTA_AbyB #32 sra_gate(out_sra, A, B);
     inc_dec_8 #32 increment(A, B, sel[0], out_p4);
-    HAM_weight #32 ham_gate(out_ham, A, B);
+    _XOR #32 ham_gate(out_ham, A, B);
+    
+    wire [16*32-1:0] combined_outputs;
     
     assign combined_outputs = { 
-        out_add, out_add, out_mul, out_div,
-        out_and, out_or, out_xor, out_not,
-        out_A, out_B, out_sll, out_srl,
-        out_sra, out_p4, out_p4, out_ham
+        out_ham, out_p4, out_p4, out_sra, 
+        out_srl, out_sll, out_B, out_A, 
+        out_not, out_xor, out_or, out_and, 
+        out_div, out_mul, out_add, out_add
     };
     
     // Multiplexer to select the result

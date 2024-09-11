@@ -21,14 +21,13 @@
 
 
 module tb_K_ALU;
-    wire [7:0] res;
-    reg [7:0] A, B;
+    wire [31:0] res;
+    reg [31:0] A, B;
     reg [3:0] sel;
-    K_ALU k_alu(res, A, B, sel);
+    K_ALU_32 k_alu(res, A, B, sel);
     initial begin
+        A = 8'd123;
         B = 8'd78;
-        A = 8'd6;
-        
         sel = 4'b0010;
     end
 endmodule
