@@ -24,7 +24,7 @@ module K_ALU(
     _SHIFT_RIGHTL_AbyB srl_gate(out_srl, A, B);
     _SHIFT_RIGHTA_AbyB sra_gate(out_sra, A, B);
     inc_dec_8 increment(A, B, sel[0], out_p4);
-    HAM_weight ham_gate(out_ham, A, B);
+    _XOR ham_gate(out_ham, A, B);
     
     assign combined_outputs = { 
         out_add, out_add, out_mul, out_div,
