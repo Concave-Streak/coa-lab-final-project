@@ -88,7 +88,6 @@ module rca_cla_8(input [7:0] a, input [7:0] b, input c_in, output [7:0] s, outpu
     cla_4 a1(a[7:4], b[7:4], c1, s[7:4], c_out);
 endmodule
 
-
 module cla_16(input [15:0] a, input [15:0] b, input c_in, output [15:0] s, output c_out);
     
     wire [3:0] c, x, p, g;
@@ -127,14 +126,35 @@ module add_sub_8 (
     _NOT_A  n(B_inverted,B);
 
     // Mux to select B or ~B based on mode
-    _MUX_2to1_8b m(B_mux, mode, B, B_inverted);
+    _MUX_2to1_n #8 m(B_mux, mode, B, B_inverted);
 
     // Structural instantiation of addr_8
     rca_cla_8 as(A, B_mux, mode, Result, CarryOut);
 
 endmodule
 
-module add_sub_inc(
+module add_sub_32 (
+    input  [31:0] A,
+    input  [31:0] B,
+    input        mode,  // 0 for addition, 1 for subtraction
+    output [31:0] Result,
+    output       CarryOut
+);
+    wire [31:0] B_inverted;
+    wire [31:0] B_mux;
+
+    // Invert the bits of B for subtraction
+    _NOT_A #32 n(B_inverted,B);
+
+    // Mux to select B or ~B based on mode
+    _MUX_2to1_n #32 m(B_mux, mode, B, B_inverted);
+
+    // Structural instantiation of addr_8
+    rca_cla_32 as(A, B_mux, mode, Result, CarryOut);
+
+endmodule
+
+module inc_dec_8(
     input  [7:0] A,
     input  [7:0] B,
     input        mode,  // 0 for addition, 1 for subtraction
@@ -145,6 +165,20 @@ module add_sub_inc(
     _OUTPUT_A o(four, 8'd4);
     not (nmode, mode);
     add_sub_8 as(A, four, nmode, Result, CarryOut);
+    
+endmodule
+
+module inc_dec_32(
+    input  [31:0] A,
+    input  [31:0] B,
+    input        mode,  // 0 for addition, 1 for subtraction
+    output [31:0] Result,
+    output       CarryOut
+);
+    wire [31:0] four;
+    _OUTPUT_A #32 o(four, 8'd4);
+    not (nmode, mode);
+    add_sub_32 as(A, four, nmode, Result, CarryOut);
     
 endmodule
     

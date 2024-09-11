@@ -1,0 +1,40 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/K_ALU.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module K_ALU
+INFO: [VRFC 10-311] analyzing module K_ALU_32
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/MUX.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module _MUX_2to1
+INFO: [VRFC 10-311] analyzing module _MUX_2to1_n
+INFO: [VRFC 10-311] analyzing module _MUX_4to1_n
+INFO: [VRFC 10-311] analyzing module _MUX_8to1_n
+INFO: [VRFC 10-311] analyzing module _MUX_16to1_n
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/SHIFTERS.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module _SHIFT_LEFT_AbyB
+INFO: [VRFC 10-311] analyzing module _SHIFT_RIGHTL_AbyB
+INFO: [VRFC 10-311] analyzing module _SHIFT_RIGHTA_AbyB
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/_OPS.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module _OR
+INFO: [VRFC 10-311] analyzing module _AND
+INFO: [VRFC 10-311] analyzing module _XOR
+INFO: [VRFC 10-311] analyzing module _NOT_A
+INFO: [VRFC 10-311] analyzing module _OUTPUT_A
+INFO: [VRFC 10-311] analyzing module _OUTPUT_B
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/adders.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module half_adder
+INFO: [VRFC 10-311] analyzing module struct_ha
+INFO: [VRFC 10-311] analyzing module full_adder
+INFO: [VRFC 10-311] analyzing module rca
+INFO: [VRFC 10-311] analyzing module cla_4
+INFO: [VRFC 10-311] analyzing module rca_cla_8
+INFO: [VRFC 10-311] analyzing module cla_16
+INFO: [VRFC 10-311] analyzing module rca_cla_32
+INFO: [VRFC 10-311] analyzing module add_sub_8
+INFO: [VRFC 10-311] analyzing module add_sub_32
+INFO: [VRFC 10-311] analyzing module inc_dec_8
+INFO: [VRFC 10-311] analyzing module inc_dec_32
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/ham_weight.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module HAM_weight
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/mul_div.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mul
+INFO: [VRFC 10-311] analyzing module div
+INFO: [VRFC 10-2263] Analyzing Verilog file "E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/TestBench/tb_K_ALU.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_K_ALU

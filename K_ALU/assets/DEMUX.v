@@ -1,7 +1,7 @@
 module _SHIFT_LEFT_AbyB #(parameter n = 8) (
     output [n-1:0] res,
     input [n-1:0] A,
-    input [n-1:0] B
+    input [$clog2(n)-1:0] B
     );
     wire [n-1:0] shift_intermediate[$clog2(n):0];
     
@@ -20,7 +20,7 @@ endmodule
 module _SHIFT_RIGHTL_AbyB #(parameter n = 8) (
     output [n-1:0] res,
     input [n-1:0] A,
-    input [n-1:0] B
+    input [$clog2(n)-1:0] B
     );
     wire [n-1:0] shift_intermediate[$clog2(n):0];
     
@@ -39,7 +39,7 @@ endmodule
 module _SHIFT_RIGHTA_AbyB #(parameter n = 8) (
     output [n-1:0] res,
     input [n-1:0] A,
-    input [n-1:0] B
+    input [$clog2(n)-1:0] B
     );
     wire [n-1:0] shift_intermediate[$clog2(n):0];
     

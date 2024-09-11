@@ -1,0 +1,13 @@
+0.7
+2020.2
+May 22 2024
+19:03:11
+E:/Course/5th sem/coa lab/verilog/Final/K_ALU/K_ALU.sim/sim_1/behav/xsim/glbl.v,1708598507,verilog,,,,glbl,,,,,,,,
+E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/K_ALU.v,1726042708,verilog,,E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/MUX.v,,K_ALU;K_ALU_32,,,,,,,,
+E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/MUX.v,1726010075,verilog,,E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/SHIFTERS.v,,_MUX_16to1_n;_MUX_2to1;_MUX_2to1_n;_MUX_4to1_n;_MUX_8to1_n,,,,,,,,
+E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/SHIFTERS.v,1726042595,verilog,,E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/_OPS.v,,_SHIFT_LEFT_AbyB;_SHIFT_RIGHTA_AbyB;_SHIFT_RIGHTL_AbyB,,,,,,,,
+E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/_OPS.v,1726008586,verilog,,E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/adders.v,,_AND;_NOT_A;_OR;_OUTPUT_A;_OUTPUT_B;_XOR,,,,,,,,
+E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/adders.v,1726038903,verilog,,E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/ham_weight.v,,add_sub_32;add_sub_8;cla_16;cla_4;full_adder;half_adder;inc_dec_32;inc_dec_8;rca;rca_cla_32;rca_cla_8;struct_ha,,,,,,,,
+E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/ham_weight.v,1726042507,verilog,,E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/mul_div.v,,HAM_weight,,,,,,,,
+E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/Sources/mul_div.v,1726038580,verilog,,E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/TestBench/tb_K_ALU.v,,div;mul,,,,,,,,
+E:/Course/5th sem/coa lab/verilog/Final/Verilog Assets/TestBench/tb_K_ALU.v,1725960784,verilog,,,,tb_K_ALU,,,,,,,,

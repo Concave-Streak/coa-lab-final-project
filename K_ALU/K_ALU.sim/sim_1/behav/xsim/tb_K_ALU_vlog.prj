@@ -1,0 +1,16 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../../Verilog Assets/Sources/K_ALU.v" \
+"../../../../../Verilog Assets/Sources/MUX.v" \
+"../../../../../Verilog Assets/Sources/SHIFTERS.v" \
+"../../../../../Verilog Assets/Sources/_OPS.v" \
+"../../../../../Verilog Assets/Sources/adders.v" \
+"../../../../../Verilog Assets/Sources/ham_weight.v" \
+"../../../../../Verilog Assets/Sources/mul_div.v" \
+"../../../../../Verilog Assets/TestBench/tb_K_ALU.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

@@ -1,96 +1,86 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 09.09.2024 17:16:33
-// Design Name: 
-// Module Name: K_ALU
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
-
 module K_ALU(
     output [7:0] res,
     input [7:0] A,
     input [7:0] B,
     input [3:0] sel
-    );
+);
     
-    wire [15:0] in_add,
-    in_sub, in_mul, 
-    in_div, in_and,
-    in_or, in_xor,
-    in_not, in_A,
-    in_B, in_sll,
-    in_srl, in_sra,
-    in_p4, in_m4,
-    in_ham;
-    wire [7:0]  out_add,
-    out_sub, out_mul, 
-    out_div, out_and,
-    out_or, out_xor,
-    out_not, out_A,
-    out_B, out_sll,
-    out_srl, out_sra,
-    out_p4, out_m4,
-    out_ham;
+    wire [7:0] out_add, out_mul, out_div;
+    wire [7:0] out_and, out_or, out_xor, out_not;
+    wire [7:0] out_A, out_B, out_sll, out_srl, out_sra;
+    wire [7:0] out_p4, out_ham;
 
+    // Functional Units
+    add_sub_8 adder(A, B, sel[0], out_add);
+    mul m(A, B, out_mul);
+    div d(A, B, out_div);
+    _AND and_gate(out_and, A, B);
+    _OR or_gate(out_or, A, B);
+    _XOR xor_gate(out_xor, A, B);
+    _NOT_A not_a_gate(out_not, A, B);
+    _OUTPUT_A output_a_gate(out_A, A, B);
+    _OUTPUT_B output_b_gate(out_B, A, B);
+    _SHIFT_LEFT_AbyB sll_gate(out_sll, A, B);
+    _SHIFT_RIGHTL_AbyB srl_gate(out_srl, A, B);
+    _SHIFT_RIGHTA_AbyB sra_gate(out_sra, A, B);
+    inc_dec_8 increment(A, B, sel[0], out_p4);
+    HAM_weight ham_gate(out_ham, A, B);
     
-    _DEMUX_1to16_16b demux_1to16_16b1(
-    {A, B}, sel,
-    in_add,
-    in_sub, in_mul, 
-    in_div, in_and,
-    in_or, in_xor,
-    in_not, in_A,
-    in_B, in_sll,
-    in_srl, in_sra,
-    in_p4, in_m4,
-    in_ham
-    );
+    assign combined_outputs = { 
+        out_add, out_add, out_mul, out_div,
+        out_and, out_or, out_xor, out_not,
+        out_A, out_B, out_sll, out_srl,
+        out_sra, out_p4, out_p4, out_ham
+    };
     
-    wire [15:0] in_add_sub, in_pm;
-    _OR addor(in_add_sub[7:0], in_add[7:0], in_sub[7:0]);
-    _OR addor2(in_add_sub[15:8], in_add[15:8], in_sub[15:8]);
-    _OR incor(in_pm[7:0], in_p4[7:0], in_m4[7:0]);
-    _OR incor2(in_pm[15:8], in_p4[15:8], in_m4[15:8]);
-    
-    add_sub_8 adder(in_add_sub[15:8], in_add_sub[7:0], sel[0], out_add);
-    mul_8 m(in_mul[15:8], in_mul[7:0], out_mul);
-    div_8 d(in_div[15:8], in_div[7:0], out_div);
-    _AND and_gate(out_and, in_and[15:8], in_and[7:0]);
-    _OR or_gate(out_or, in_or[15:8], in_or[7:0]);
-    _XOR xor_gate(out_xor, in_xor[15:8], in_xor[7:0]);
-    _NOT_A not_a_gate(out_not, in_not[15:8], in_not[7:0]);
-    _OUTPUT_A output_a_gate(out_A, in_A[15:8], in_A[7:0]);
-    _OUTPUT_B output_b_gate(out_B, in_B[15:8], in_B[7:0]);
-    _SHIFT_LEFT_AbyB sll_gate(out_sll, in_sll[15:8], in_sll[7:0]);
-    _SHIFT_RIGHTL_AbyB srl_gate(out_srl, in_srl[15:8], in_srl[7:0]);
-    _SHIFT_RIGHTA_AbyB sra_gate(out_sra, in_sra[15:8], in_sra[7:0]);
-    add_sub_inc increment(in_pm[15:8], in_pm[7:0], sel[0], out_p4);
-    _HAM_WEIGHT_A ham_gate(out_ham, in_ham[15:8], in_ham[7:0]);
-    
+    // Multiplexer to select the result
     _MUX_16to1_n #8 mux1(
-    res, sel,
-    out_add,
-    out_add, out_mul, 
-    out_div, out_and,
-    out_or, out_xor,
-    out_not, out_A,
-    out_B, out_sll,
-    out_srl, out_sra,
-    out_p4, out_p4,
-    out_ham);
+        res, sel,
+        combined_outputs
+    );
     
 endmodule
+
+module K_ALU_32(
+    output [31:0] res,
+    input [31:0] A,
+    input [31:0] B,
+    input [31:0] sel
+);
+    
+    wire [31:0] out_add, out_mul, out_div;
+    wire [31:0] out_and, out_or, out_xor, out_not;
+    wire [31:0] out_A, out_B, out_sll, out_srl, out_sra;
+    wire [31:0] out_p4, out_ham;
+
+    // Functional Units
+    add_sub_32 adder(A, B, sel[0], out_add);
+    mul #32 m(A, B, out_mul);
+    div #32 d(A, B, out_div);
+    _AND #32 and_gate(out_and, A, B);
+    _OR #32 or_gate(out_or, A, B);
+    _XOR #32 xor_gate(out_xor, A, B);
+    _NOT_A #32 not_a_gate(out_not, A, B);
+    _OUTPUT_A #32 output_a_gate(out_A, A, B);
+    _OUTPUT_B #32 output_b_gate(out_B, A, B);
+    _SHIFT_LEFT_AbyB #32 sll_gate(out_sll, A, B);
+    _SHIFT_RIGHTL_AbyB #32 srl_gate(out_srl, A, B);
+    _SHIFT_RIGHTA_AbyB #32 sra_gate(out_sra, A, B);
+    inc_dec_8 #32 increment(A, B, sel[0], out_p4);
+    HAM_weight #32 ham_gate(out_ham, A, B);
+    
+    assign combined_outputs = { 
+        out_add, out_add, out_mul, out_div,
+        out_and, out_or, out_xor, out_not,
+        out_A, out_B, out_sll, out_srl,
+        out_sra, out_p4, out_p4, out_ham
+    };
+    
+    // Multiplexer to select the result
+    _MUX_16to1_n #32 mux1(
+        res, sel,
+        combined_outputs
+    );
+    
+endmodule
+
