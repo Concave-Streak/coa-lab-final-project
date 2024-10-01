@@ -28,6 +28,6 @@ module tb_K_ALU;
     initial begin
         A = 32'd150;
         B = 32'd78;
-        sel = 4'd3;
+        sel = 4'd9;
     end
 endmodule

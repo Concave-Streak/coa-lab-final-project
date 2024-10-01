@@ -7,7 +7,7 @@ module K_ALU_32(
     
     wire [31:0] out_add, out_lt, out_gt;
     wire [31:0] out_and, out_or, out_xor, out_not;
-    wire [31:0] out_nor, out_B, out_sll, out_srl, out_sra;
+    wire [31:0] out_nor, out_lui, out_sll, out_srl, out_sra;
     wire [31:0] out_p4, out_ham;
 
     // Functional Units
@@ -18,7 +18,7 @@ module K_ALU_32(
     _XOR #32 xor_gate(out_xor, A, B);
     _NOT_A #32 not_a_gate(out_not, A, B);
     _NOR #32 output_a_gate(out_nor, A, B);
-    _OUTPUT_B #32 output_b_gate(out_B, A, B);
+    _LUI #32 upper(out_lui, A, B);
     _SHIFT_LEFT_AbyB #32 sll_gate(out_sll, A, B);
     _SHIFT_RIGHTL_AbyB #32 srl_gate(out_srl, A, B);
     _SHIFT_RIGHTA_AbyB #32 sra_gate(out_sra, A, B);
@@ -29,7 +29,7 @@ module K_ALU_32(
     
     assign combined_outputs = { 
         out_ham, out_p4, out_p4, out_sra, 
-        out_srl, out_sll, out_B, out_nor, 
+        out_srl, out_sll, out_lui, out_nor, 
         out_not, out_xor, out_or, out_and, 
         out_gt, out_lt, out_add, out_add
     };
