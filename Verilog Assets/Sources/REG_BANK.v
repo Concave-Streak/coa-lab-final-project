@@ -33,7 +33,7 @@ module REG_BANK (
             registers[14] <= 0;
             registers[15] <= 0;
         end else if (reg_write) begin
-            if (rd != 4'd0 && rd != 4'd15) begin
+            if (rd != 4'd0) begin
                 registers[rd] <= write_data; // Write data to register if valid
             end
         end
