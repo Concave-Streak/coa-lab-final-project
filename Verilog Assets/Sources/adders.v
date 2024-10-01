@@ -176,7 +176,7 @@ module inc_dec_32(
     output       CarryOut
 );
     wire [31:0] four;
-    _OUTPUT_A #32 o(four, 8'd4);
+    _OUTPUT_A #32 o(four, 32'd4);
     not (nmode, mode);
     add_sub_32 as(A, four, nmode, Result, CarryOut);
     

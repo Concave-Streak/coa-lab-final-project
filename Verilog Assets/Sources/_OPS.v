@@ -47,6 +47,15 @@ module _XOR #(parameter WIDTH = 8)(output [WIDTH-1:0] res,input  [WIDTH-1:0] A, 
     endgenerate
 endmodule
 
+module _NOR #(parameter WIDTH = 8)(output [WIDTH-1:0] res,input  [WIDTH-1:0] A, input  [WIDTH-1:0] B);
+    genvar i;
+    generate
+        for (i = 0; i < WIDTH; i = i + 1) begin : or_gen
+            nor (res[i], A[i], B[i]);
+        end
+    endgenerate
+endmodule
+
 module _NOT_A #(parameter WIDTH = 8)(output [WIDTH-1:0] res,input  [WIDTH-1:0] A, input  [WIDTH-1:0] B);
     genvar i;
     generate
