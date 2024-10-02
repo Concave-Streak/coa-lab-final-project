@@ -26,8 +26,8 @@ module tb_K_ALU;
     reg [3:0] sel;
     K_ALU_32 k_alu(res, A, B, sel);
     initial begin
-        A = 32'd150;
+        A = 32'd48;
         B = 32'd78;
-        sel = 4'd9;
+        sel = 4'd15;
     end
 endmodule

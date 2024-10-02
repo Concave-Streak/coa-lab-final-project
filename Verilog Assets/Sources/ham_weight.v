@@ -1,4 +1,4 @@
-module hamming_weight_32bit (
+module HAM_weight_32 (
     output [31:0] weight,  // Maximum weight can be 32, which needs 6 bits to represent.
     input [31:0] A,
     input [31:0] B

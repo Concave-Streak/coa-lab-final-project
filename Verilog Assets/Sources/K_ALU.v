@@ -23,7 +23,7 @@ module K_ALU_32(
     _SHIFT_RIGHTL_AbyB #32 srl_gate(out_srl, A, B);
     _SHIFT_RIGHTA_AbyB #32 sra_gate(out_sra, A, B);
     inc_dec_32 increment(A, B, sel[0], out_p4);
-    _XOR #32 ham_gate(out_ham, A, B);
+    HAM_weight_32 #32 ham_gate(out_ham, A, B);
     
     wire [16*32-1:0] combined_outputs;
     
