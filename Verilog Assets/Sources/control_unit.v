@@ -116,7 +116,7 @@ module ControlUnit_FSM (
                     end
 
                     MOVE: begin // MOVE instruction
-                        DataSel = 2'b10; // Select MOVE output
+                        DataSel = 2'b00; // Select MOVE output
                         next_state = WRITEBACK; // Move to writeback stage
                     end
 
