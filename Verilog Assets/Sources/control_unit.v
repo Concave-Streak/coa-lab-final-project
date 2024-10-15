@@ -142,6 +142,7 @@ module ControlUnit_FSM (
             end
 
             MEMORY: begin
+                //TODO
                 if (opcode_reg == LOAD) begin // Load instruction
                     MemRW = 0; // Read from memory
                     DataSel = 2'b01; // Select memory output
@@ -153,6 +154,7 @@ module ControlUnit_FSM (
             end
 
             WRITEBACK: begin
+            //TODO
                 // Write result back to register file (if necessary)
                 next_state = UPDATE_PC; // Move to PC update
             end
