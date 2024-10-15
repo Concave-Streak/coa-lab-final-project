@@ -47,7 +47,7 @@ module controller(
     
     assign write = 1'b1;
     
-    REG_BANK regs(clk, rst, cont[7:4], cont[3:0], cont[11:8], rd, write, rs1, rs2);
+    REG_BANK regs(clk, rst, cont[11:8], cont[7:4], cont[3:0], rd, write, rs1, rs2);
     K_ALU_32 alu(rd, rs1, rs2, cont[15:12]);
     
 endmodule
