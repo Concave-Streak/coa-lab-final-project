@@ -6,7 +6,7 @@ module data_mem(
     output [31:0] dout
 );
 
-    gskill_ripjaw blk_mem_gen_0(
+    blk_mem_gen_0 gskill_ripjaw(
         .DO(dout),
         .ADDR(addr[11:0]),
         .CLK(clk),
@@ -23,7 +23,7 @@ module inst_mem(
     output [31:0] dout
 );
 
-    samsung_990pro blk_mem_gen_1(
+    blk_mem_gen_1 samsung_990pro(
         .DO(dout),
         .ADDR(addr[11:0]),
         .CLK(clk)

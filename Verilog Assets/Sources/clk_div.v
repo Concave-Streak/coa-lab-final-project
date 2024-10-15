@@ -1,11 +1,11 @@
-`timescale 1ns/1ps
+`timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
 // 
-// Create Date: 11.09.2024 15:24:16
+// Create Date: 21.08.2024 14:30:43
 // Design Name: 
-// Module Name: controller_test
+// Module Name: clk_div
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,23 +20,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mem_test;
-    reg [2:0] code;
-    reg clk, rst;
-    controller uut(clk, rst, code);
-    integer i;
-    
-    initial begin
-        
-        
-        
-        #100
-        $finish;
-    end
-    
-    always begin
-        #5 clk = ~clk;
-    end
+module clk_div( input clk, input rst, output new_clk);
 
+reg [31:0] cnt;
+
+always @(posedge clk or posedge rst)
+begin
+    if (rst)
+        cnt = 0;
+    else
+        cnt = cnt + 1;
+end
+
+assign new_clk = cnt[27];
 
 endmodule
