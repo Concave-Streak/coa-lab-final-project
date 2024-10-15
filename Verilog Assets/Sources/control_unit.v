@@ -61,7 +61,6 @@ module ControlUnit_FSM (
         
         case (current_state)
             FETCH: begin
-                loadPC = 1;  // Load PC to fetch the next instruction
                 next_state = DECODE;  // Move to the decode stage
             end
 
@@ -79,14 +78,14 @@ module ControlUnit_FSM (
                         IMMsel = 0; // Use register value
                         DataSel = 2'b00; // Select ALU output
                         writeReg = 1;
-                        next_state = FETCH; // Move to writeback stage
+                        next_state = UPDATE_PC; // Move to writeback stage
                     end
 
                     ALU_IMM: begin // ALU Immediate
                         IMMsel = 1; // Use immediate value
                         DataSel = 2'b00; // Select ALU output
                         writeReg = 1;
-                        next_state = FETCH; // Move to writeback stage
+                        next_state = UPDATE_PC; // Move to writeback stage
                     end
 
                     LOAD: begin // Load instruction
@@ -100,54 +99,54 @@ module ControlUnit_FSM (
                     BR: begin // Branch (BR)
                         IMMsel = 1;
                         BRANCH = 3'b001; // BR type
-                        next_state = FETCH; // Move to PC update
+                        next_state = UPDATE_PC; // Move to PC update
                     end
 
                     BMI: begin // Branch if minus (BMI)
                         IMMsel = 1;
                         BRANCH = 3'b010; // BMI type
-                        next_state = FETCH;
+                        next_state = UPDATE_PC;
                     end
 
                     BPL: begin // Branch if positive (BPL)
                         IMMsel = 1;
                         BRANCH = 3'b011; // BPL type
-                        next_state = FETCH;
+                        next_state = UPDATE_PC;
                     end
 
                     BZ: begin // Branch if zero (BZ)
                         IMMsel = 1;
                         BRANCH = 3'b100; // BZ type
-                        next_state = FETCH;
+                        next_state = UPDATE_PC;
                     end
 
                     MOVE: begin // MOVE instruction
                         DataSel = 2'b00; // Select MOVE output
                         writeReg = 1;
-                        next_state = FETCH; // Move to writeback stage
+                        next_state = UPDATE_PC; // Move to writeback stage
                     end
 
                     CMOV: begin // Conditional MOVE (CMOV)
                         IMMsel = 0;
                         DataSel = 2'b10; // Select CMOV output
                         writeReg = 1;
-                        next_state = FETCH;
+                        next_state = UPDATE_PC;
                     end
 
                     NOP: begin // NOP (No operation)
-                        next_state = FETCH; // No operation, go to next instruction
+                        next_state = UPDATE_PC; // No operation, go to next instruction
                     end
 
                     HALT: begin // HALT instruction
                         if (continue) begin
-                            next_state = FETCH; // Continue executing instructions if continue signal is high
+                            next_state = UPDATE_PC; // Continue executing instructions if continue signal is high
                         end else begin
                             next_state = current_state; // Halt execution if continue signal is low
                         end
                     end
 
                     default: begin
-                        next_state = FETCH; // Default case, go back to fetch state
+                        next_state = UPDATE_PC; // Default case, go back to fetch state
                     end
                 endcase
             end
@@ -159,23 +158,19 @@ module ControlUnit_FSM (
                 if (op_code == LOAD) begin // Load instruction
                     MemWen = 0; // Read from memory
                     DataSel = 2'b01; // Select memory output
-                    next_state = WRITEBACK;
+                    writeReg = 1;
+                    next_state = UPDATE_PC;
                 end else if (op_code == STORE) begin // Store instruction
                     MemWen = 1; // Write to memory
-                    next_state = WRITEBACK; // Move to PC update after store
+                    writeReg = 0;
+                    next_state = UPDATE_PC; // Move to PC update after store
                 end
 
             end
 
-            WRITEBACK: begin
-
-                if (op_code == STORE) begin
-                    writeReg = 0; // disable register write
-                end else begin
-                    writeReg = 1; // enable register write
-                end
-
-                next_state = FETCH; // Move to PC update
+            UPDATE_PC: begin
+                loadPC = 1;
+                next_state = FETCH; 
             end
 
             default: begin
