@@ -13,24 +13,24 @@ module ControlUnit_Fast (
 );
 
     // OP code mappings
-    parameter ALU        = 4'h0;  // ALU operation
-    parameter ALU_IMM    = 4'h1;  // ALU immediate operation
-    parameter LOAD       = 4'h2;  // Load instruction
-    parameter STORE      = 4'h3;  // Store instruction
-    parameter BR         = 4'h4;  // Branch instruction
-    parameter BMI        = 4'h5;  // Branch if minus
-    parameter BPL        = 4'h6;  // Branch if positive
-    parameter BZ         = 4'h7;  // Branch if zero
-    parameter MOVE       = 4'h8;  // Move instruction
-    parameter CMOV       = 4'h9;  // Conditional move instruction
-    parameter HALT       = 4'hF;  // Halt instruction
-    parameter NOP        = 4'hE;  // No operation
+    parameter ALU = 4'h0;
+    parameter ALU_IMM = 4'h1;
+    parameter LOAD = 4'h2;
+    parameter STORE = 4'h3; 
+    parameter BR = 4'h4; 
+    parameter BMI = 4'h5; 
+    parameter BPL = 4'h6; 
+    parameter BZ = 4'h7;
+    parameter MOVE = 4'h8;
+    parameter CMOV = 4'h9;
+    parameter HALT = 4'hF;
+    parameter NOP = 4'hE;  
 
     // FSM state definitions
-    parameter FETCH      = 2'b00;
-    parameter DECODE     = 2'b01;
-    parameter EXECUTE    = 2'b10;
-    parameter UPDATE_PC  = 2'b11;
+    parameter FETCH  = 2'b00;
+    parameter DECODE = 2'b01;
+    parameter EXECUTE = 2'b10;
+    parameter WRITEBACK = 2'b11;
 
     // State registers
     reg [2:0] current_state, next_state;
@@ -54,113 +54,108 @@ module ControlUnit_Fast (
         
         case (current_state)
             FETCH: begin
-                next_state = DECODE;  // Move to the decode stage
+                next_state = DECODE;  
             end
 
             DECODE: begin
-                BRANCH  = 3'b000;
-                DataSel = 2'b00;
-                IMMsel = 0;
                 next_state = EXECUTE;
-            end                       //clock cycle for register read
+            end                     
 
             EXECUTE: begin
+                //default values
+                BRANCH = 3'b000;
+                loadPC = 1;
+                next_state = FETCH;
+
                 case (op_code)
-                    ALU: begin // ALU Operation
-                        IMMsel = 0; // Use register value
-                        DataSel = 2'b00; // Select ALU output
-                        next_state = UPDATE_PC; // Move to writeback stage
+                    ALU: begin
+                        IMMsel = 0;
+                        DataSel = 2'b00;
+                        writeReg = 1;
                     end
 
-                    ALU_IMM: begin // ALU Immediate
-                        IMMsel = 1; // Use immediate value
-                        DataSel = 2'b00; // Select ALU output
-                        next_state = UPDATE_PC; // Move to writeback stage
+                    ALU_IMM: begin 
+                        IMMsel = 1;
+                        DataSel = 2'b00;
+                        writeReg = 1;
                     end
 
-                    LOAD: begin // Load instruction
+                    LOAD: begin 
                         MemEn = 1; // Enable memory access
                         IMMsel = 1;                    
                         MemWen = 0; // Read from memory
                         DataSel = 2'b01; // Select memory output
-                        next_state = UPDATE_PC;
+                        loadPC = 0;
+                        next_state = WRITEBACK;
                     end
 
-                    STORE: begin // Store instruction
+                    STORE: begin 
                         MemEn = 1; // Enable memory access
                         IMMsel = 1;
                         MemWen = 1; // Write to memory
-                        next_state = UPDATE_PC; // Move to PC update after store                        
+                        writeReg = 0;          
                     end
 
-                    BR: begin // Branch (BR)
+                    BR: begin
                         IMMsel = 1;
                         BRANCH = 3'b001; // BR type
-                        next_state = UPDATE_PC; // Move to PC update
                     end
 
                     BMI: begin // Branch if minus (BMI)
                         IMMsel = 1;
                         BRANCH = 3'b010; // BMI type
-                        next_state = UPDATE_PC;
+                        
                     end
 
                     BPL: begin // Branch if positive (BPL)
                         IMMsel = 1;
                         BRANCH = 3'b011; // BPL type
-                        next_state = UPDATE_PC;
+                        
                     end
 
                     BZ: begin // Branch if zero (BZ)
                         IMMsel = 1;
                         BRANCH = 3'b100; // BZ type
-                        next_state = UPDATE_PC;
+                        
                     end
 
-                    MOVE: begin // MOVE instruction
+                    MOVE: begin 
                         DataSel = 2'b00; // Select MOVE output
-                        next_state = UPDATE_PC; // Move to writeback stage
+
                     end
 
-                    CMOV: begin // Conditional MOVE (CMOV)
+                    CMOV: begin 
                         IMMsel = 0;
-                        DataSel = 2'b10; // Select CMOV output
-                        next_state = UPDATE_PC;
+                        DataSel = 2'b10; // Select CMOV output                
                     end
 
-                    NOP: begin // NOP (No operation)
-                        next_state = UPDATE_PC; // No operation, go to next instruction
+                    NOP: begin
+                        //pass
                     end
 
-                    HALT: begin // HALT instruction
+                    HALT: begin 
                         if (continue) begin
-                            next_state = UPDATE_PC; // Continue executing instructions if continue signal is high
+                            //pass
                         end else begin
-                            next_state = current_state; // Halt execution if continue signal is low
+                            next_state = current_state; 
                         end
                     end
 
                     default: begin
-                        next_state = UPDATE_PC; // Default case, go back to fetch state
+                        //pass
                     end
                 endcase
             end
 
 
-            UPDATE_PC: begin
-                
-                if (op_code == STORE) begin
-                    writeReg = 0;
-                end else begin
-                    writeReg = 1;
-                end                    
-            
+            WRITEBACK: begin
+                writeReg = 1;
                 loadPC = 1;
                 next_state = FETCH; 
             end
 
             default: begin
-                next_state = FETCH; // Default case, start fetching instructions
+                next_state = FETCH;
             end
         endcase
     end
