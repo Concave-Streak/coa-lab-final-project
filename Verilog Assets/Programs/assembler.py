@@ -36,6 +36,7 @@ def parse_data_section(data_lines):
         if ':' not in line:
             continue
         
+        line = line.split('#')[0].strip()
         parts = line.split()
         label = parts[0].replace(':', '')
         data_type = parts[1]
@@ -94,6 +95,7 @@ def assemble(instructions, data_labels):
     address_counter = 0  # Reset address counter for final assembly
 
     for instr in instructions:
+        instr = instr.split('#')[0].strip()
         parts = instr.replace(',', '').split()  # Split instruction by spaces and remove commas
 
         op = parts[0].upper()
@@ -121,8 +123,8 @@ def assemble(instructions, data_labels):
                 offset, rs1 = parts[2].split('(')  # Get offset and register (e.g., 100($0))
                 rs1 = rs1.rstrip(')')
             else:
-                offset = data_labels[parts[2].upper()]  # Access label in data
-                rs1 = '0'  # Default to $0 if no register specified
+                offset = data_labels[parts[2]]  # Access label in data
+                rs1 = '$0'  # Default to $0 if no register specified
             
             if offset in data_labels:
                 offset = data_labels[offset]

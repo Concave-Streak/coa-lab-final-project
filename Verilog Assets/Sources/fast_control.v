@@ -120,11 +120,12 @@ module ControlUnit_Fast (
                     end
 
                     MOVE: begin 
+                        writeReg = 1;
                         DataSel = 2'b00; // Select MOVE output
-
                     end
 
                     CMOV: begin 
+                        writeReg = 1;
                         IMMsel = 0;
                         DataSel = 2'b10; // Select CMOV output                
                     end
@@ -137,6 +138,7 @@ module ControlUnit_Fast (
                         if (continue) begin
                             //pass
                         end else begin
+                            loadPC = 0;
                             next_state = current_state; 
                         end
                     end
