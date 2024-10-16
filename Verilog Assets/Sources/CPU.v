@@ -12,7 +12,7 @@ module CPU(
     
     PC_reg PC(clk, reset, loadPC, NPC, PCout);
     
-    rca_cla_32 ADD(PCout, 32'd4, 1'b0, PCinc);
+    rca_cla_32 ADD(PCout, 32'd1, 1'b0, PCinc);
     
     inst_mem IM(clk, PCout, INS);
     

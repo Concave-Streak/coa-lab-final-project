@@ -32,6 +32,6 @@ begin
         cnt = cnt + 1;
 end
 
-assign new_clk = cnt[27];
+assign new_clk = cnt[26];
 
 endmodule

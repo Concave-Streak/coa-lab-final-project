@@ -18,15 +18,15 @@ module REG_BANK (
     always @(posedge clk or posedge rst_n) begin
         if (rst_n) begin
             registers[0] <= 0;
-            registers[1] <= 1;
-            registers[2] <= 22;
-            registers[3] <= 349;
-            registers[4] <= 56;
+            registers[1] <= 0;
+            registers[2] <= 0;
+            registers[3] <= 0;
+            registers[4] <= 0;
             registers[5] <= 0;
             registers[6] <= 0;
             registers[7] <= 0;
             registers[8] <= 0;
-            registers[9] <= 10;
+            registers[9] <= 0;
             registers[10] <= 0;
             registers[11] <= 0;
             registers[12] <= 0;

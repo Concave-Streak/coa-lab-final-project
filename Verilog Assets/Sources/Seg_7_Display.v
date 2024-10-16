@@ -22,14 +22,14 @@ assign aen = 8'b11111111; // all turned off initially
 always @(posedge clk)// or posedge clr)
 	
 	case(s)
-	0:digit = x[3:0]; // s is 00 -->0 ;  digit gets assigned 4 bit value assigned to x[3:0]
-	1:digit = x[7:4]; // s is 01 -->1 ;  digit gets assigned 4 bit value assigned to x[7:4]
-	2:digit = x[11:8]; // s is 10 -->2 ;  digit gets assigned 4 bit value assigned to x[11:8
-	3:digit = x[15:12]; // s is 11 -->3 ;  digit gets assigned 4 bit value assigned to x[15:12]
-	4:digit = x[19:16]; // s is 00 -->0 ;  digit gets assigned 4 bit value assigned to x[3:0]
-    5:digit = x[23:20]; // s is 01 -->1 ;  digit gets assigned 4 bit value assigned to x[7:4]
-    6:digit = x[27:24]; // s is 10 -->2 ;  digit gets assigned 4 bit value assigned to x[11:8
-    7:digit = x[31:28]; // s is 11 -->3 ;  digit gets assigned 4 bit value assigned to x[15:12]
+	0:digit = x[3:0];
+	1:digit = x[7:4]; 
+	2:digit = x[11:8]; 
+	3:digit = x[15:12]; 
+	4:digit = x[19:16];
+    5:digit = x[23:20];
+    6:digit = x[27:24]; 
+    7:digit = x[31:28]; 
 
 	default:digit = x[3:0];
 	
