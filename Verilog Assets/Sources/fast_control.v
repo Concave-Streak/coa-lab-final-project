@@ -45,9 +45,10 @@ module ControlUnit_Fast (
     end
 
     // Control logic based on FSM state and instruction opcode
-    always @(posedge clk) begin
+    always @(*) begin
         // Default control signal values
         loadPC = 0;
+        writeReg = 0;
         MemEn = 0;
         MemWen = 0;
         
@@ -57,7 +58,6 @@ module ControlUnit_Fast (
             end
 
             DECODE: begin
-                writeReg = 0;
                 BRANCH  = 3'b000;
                 DataSel = 2'b00;
                 IMMsel = 0;
@@ -69,23 +69,20 @@ module ControlUnit_Fast (
                     ALU: begin // ALU Operation
                         IMMsel = 0; // Use register value
                         DataSel = 2'b00; // Select ALU output
-                        writeReg = 1;
                         next_state = UPDATE_PC; // Move to writeback stage
                     end
 
                     ALU_IMM: begin // ALU Immediate
                         IMMsel = 1; // Use immediate value
                         DataSel = 2'b00; // Select ALU output
-                        writeReg = 1;
                         next_state = UPDATE_PC; // Move to writeback stage
                     end
 
                     LOAD: begin // Load instruction
                         MemEn = 1; // Enable memory access
-                        IMMsel = 1;
+                        IMMsel = 1;                    
                         MemWen = 0; // Read from memory
                         DataSel = 2'b01; // Select memory output
-                        writeReg = 1;
                         next_state = UPDATE_PC;
                     end
 
@@ -93,8 +90,7 @@ module ControlUnit_Fast (
                         MemEn = 1; // Enable memory access
                         IMMsel = 1;
                         MemWen = 1; // Write to memory
-                        writeReg = 0;
-                        next_state = UPDATE_PC; // Move to PC update after store
+                        next_state = UPDATE_PC; // Move to PC update after store                        
                     end
 
                     BR: begin // Branch (BR)
@@ -123,14 +119,12 @@ module ControlUnit_Fast (
 
                     MOVE: begin // MOVE instruction
                         DataSel = 2'b00; // Select MOVE output
-                        writeReg = 1;
                         next_state = UPDATE_PC; // Move to writeback stage
                     end
 
                     CMOV: begin // Conditional MOVE (CMOV)
                         IMMsel = 0;
                         DataSel = 2'b10; // Select CMOV output
-                        writeReg = 1;
                         next_state = UPDATE_PC;
                     end
 
@@ -152,7 +146,15 @@ module ControlUnit_Fast (
                 endcase
             end
 
+
             UPDATE_PC: begin
+                
+                if (op_code == STORE) begin
+                    writeReg = 0;
+                end else begin
+                    writeReg = 1;
+                end                    
+            
                 loadPC = 1;
                 next_state = FETCH; 
             end

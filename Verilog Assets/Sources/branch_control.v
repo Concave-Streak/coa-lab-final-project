@@ -22,7 +22,7 @@ module BranchControl (
 
     assign condition = (BRANCH == BR) || ((BRANCH == BMI) & LT) || ((BRANCH == BPL) & GT) || ((BRANCH == BZ) & EQ);
 
-    assign jump = (BRANCH==NB) & condition;
+    assign jump = (BRANCH!=NB) & condition;
     
     assign NPC = (jump) ? PC_plus_4 + B : PC_plus_4;
 

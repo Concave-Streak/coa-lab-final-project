@@ -32,7 +32,7 @@ module CPU(
     assign dataMUXin = {32'd0, CMOV, mem_data, ALU_OUT};
     _MUX_4to1_n #32 dataMUX(rd_in, DataSel, dataMUXin);
     
-    ControlUnit CU(clk, reset, continue, INS[31:28], loadPC, writeReg, MemEn, MemWen, IMMsel, DataSel, BRANCH);
+    ControlUnit_Fast CU(clk, reset, continue, INS[31:28], loadPC, writeReg, MemEn, MemWen, IMMsel, DataSel, BRANCH);
     
     BranchControl BU(PCinc, A, B, BRANCH, NPC, CMOV);
     

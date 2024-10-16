@@ -33,17 +33,17 @@ module CPU_tb(
         clk = 0;
         continue = 0;
         rst = 0;
-        #7
+        #2
         rst = 1;
-        #7
+        #2
         rst = 0;
         
-        #1000
+        #10000
         $finish;
     end
     
     always begin
-        #5 clk = ~clk;
+        #1 clk = ~clk;
     end
     
     
