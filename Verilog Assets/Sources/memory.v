@@ -7,12 +7,12 @@ module data_mem(
 );
 
     blk_mem_gen_0 gskill_ripjaw(
-        .DO(dout),
-        .ADDR(addr[11:0]),
-        .CLK(clk),
-        .DI(din),
-        .EN(en),
-        .WE(we)
+        .douta(dout),
+        .addra(addr[11:0]),
+        .clka(clk),
+        .dina(din),
+        .ena(en),
+        .wea(we)
     );
 
 endmodule
@@ -24,9 +24,9 @@ module inst_mem(
 );
 
     blk_mem_gen_1 samsung_990pro(
-        .DO(dout),
-        .ADDR(addr[11:0]),
-        .CLK(clk)
+        .douta(dout),
+        .addra(addr[11:0]),
+        .clka(clk)
     );
 
 endmodule
