@@ -1,4 +1,4 @@
-module ControlUnit (
+module ControlUnit_Fast (
     input clk,
     input reset,
     input continue,         // Continue signal (for halting)
@@ -27,12 +27,10 @@ module ControlUnit (
     parameter NOP        = 4'hE;  // No operation
 
     // FSM state definitions
-    parameter FETCH      = 3'b000;
-    parameter DECODE     = 3'b001;
-    parameter EXECUTE    = 3'b010;
-    parameter MEMORY     = 3'b011;
-    //parameter WRITEBACK  = 3'b100;
-    parameter UPDATE_PC  = 3'b101;
+    parameter FETCH      = 2'b00;
+    parameter DECODE     = 2'b01;
+    parameter EXECUTE    = 2'b10;
+    parameter UPDATE_PC  = 2'b11;
 
     // State registers
     reg [2:0] current_state, next_state;
@@ -50,6 +48,8 @@ module ControlUnit (
     always @(posedge clk) begin
         // Default control signal values
         loadPC = 0;
+        MemEn = 0;
+        MemWen = 0;
         
         case (current_state)
             FETCH: begin
@@ -57,8 +57,6 @@ module ControlUnit (
             end
 
             DECODE: begin
-                MemEn = 0;
-                MemWen = 0;
                 writeReg = 0;
                 BRANCH  = 3'b000;
                 DataSel = 2'b00;
@@ -83,11 +81,20 @@ module ControlUnit (
                     end
 
                     LOAD: begin // Load instruction
-                        next_state = MEMORY; // Move to memory access stage
+                        MemEn = 1; // Enable memory access
+                        IMMsel = 1;
+                        MemWen = 0; // Read from memory
+                        DataSel = 2'b01; // Select memory output
+                        writeReg = 1;
+                        next_state = UPDATE_PC;
                     end
 
                     STORE: begin // Store instruction
-                        next_state = MEMORY; // Move to memory access stage
+                        MemEn = 1; // Enable memory access
+                        IMMsel = 1;
+                        MemWen = 1; // Write to memory
+                        writeReg = 0;
+                        next_state = UPDATE_PC; // Move to PC update after store
                     end
 
                     BR: begin // Branch (BR)
@@ -143,23 +150,6 @@ module ControlUnit (
                         next_state = UPDATE_PC; // Default case, go back to fetch state
                     end
                 endcase
-            end
-
-            MEMORY: begin
-                MemEn = 1; // Enable memory access
-                IMMsel = 1;
-                
-                if (op_code == LOAD) begin // Load instruction
-                    MemWen = 0; // Read from memory
-                    DataSel = 2'b01; // Select memory output
-                    writeReg = 1;
-                    next_state = UPDATE_PC;
-                end else if (op_code == STORE) begin // Store instruction
-                    MemWen = 1; // Write to memory
-                    writeReg = 0;
-                    next_state = UPDATE_PC; // Move to PC update after store
-                end
-
             end
 
             UPDATE_PC: begin

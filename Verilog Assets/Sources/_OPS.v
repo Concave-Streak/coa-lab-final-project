@@ -87,7 +87,7 @@ module _LUI #(parameter n = 8) (
 endmodule
 
 module sign_ext(input [15:0] A, output [31:0] Imm);
-    assign Imm = {16'd0,A};
+    assign Imm = {{16{A[15]}}, A};  // Sign extend the 16-bit number to 32-bit
 endmodule
 
 module sltgt_32 (input [31:0] A, input [31:0] B, output [31:0] outlt, output[31:0] outgt);
