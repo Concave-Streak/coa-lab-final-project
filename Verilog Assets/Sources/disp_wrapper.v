@@ -4,7 +4,7 @@ module dwrap(
     input [15:0] SW,
     output [6:0] SEG,
     output [7:0] AN,
-    output DPbin32_to_bcd
+    output DP
 );    
     wire new_clk, write;
     wire [31:0] rdec, rout,rd, rs1, rs2;

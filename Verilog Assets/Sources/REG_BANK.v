@@ -31,7 +31,7 @@ module REG_BANK (
             registers[11] <= 0;
             registers[12] <= 0;
             registers[13] <= 0;
-            registers[14] <= 0;
+            registers[14] <= 1023;
             registers[15] <= 0;
         end else if (reg_write) begin
             if (rd_addr != 4'd0) begin
