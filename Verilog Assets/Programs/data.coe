@@ -1,5 +1,4 @@
 memory_initialization_radix=16;
 memory_initialization_vector=
-00000024
-0000003c
+00000000
 ;

@@ -9,7 +9,9 @@ module ControlUnit_Fast (
     output reg MemWen,      // Memory Write Enable
     output reg IMMsel,      // Select between RS2 or Immediate
     output reg [1:0] DataSel, // Data select (ALU, memory, CMOV)
-    output reg [2:0] BRANCH // Branch select (no branch, BR, BMI, BPL, BZ, CMOV)
+    output reg [2:0] BRANCH, // Branch select (no branch, BR, BMI, BPL, BZ, CMOV)
+    output reg pwr,
+    output reg halted
 );
 
     // OP code mappings
@@ -23,6 +25,7 @@ module ControlUnit_Fast (
     parameter BZ = 4'h7;
     parameter MOVE = 4'h8;
     parameter CMOV = 4'h9;
+    parameter JR =4'hA;
     parameter HALT = 4'hF;
     parameter NOP = 4'hE;  
 
@@ -51,6 +54,8 @@ module ControlUnit_Fast (
         writeReg = 0;
         MemEn = 0;
         MemWen = 0;
+        pwr = 1;
+        halted = 0;
         
         case (current_state)
             FETCH: begin
@@ -95,6 +100,11 @@ module ControlUnit_Fast (
                         MemWen = 1; // Write to memory
                         writeReg = 0;          
                     end
+                    
+                    JR: begin
+                        IMMsel = 0;
+                        BRANCH = 3'b101; // JR type
+                    end
 
                     BR: begin
                         IMMsel = 1;
@@ -138,6 +148,7 @@ module ControlUnit_Fast (
                         if (continue) begin
                             //pass
                         end else begin
+                            halted = 1;
                             loadPC = 0;
                             next_state = current_state; 
                         end

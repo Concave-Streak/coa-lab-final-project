@@ -3,7 +3,7 @@ import sys
 # Instruction dictionaries to map mnemonics to hex codes
 OP_CODES = {
     'ALU': '0', 'ALUI': '1', 'LD': '20', 'ST': '30', 'BR': '40',
-    'BMI': '50', 'BPL': '60', 'BZ': '70', 'MOVE': '80', 'CMOV': '90',
+    'BMI': '50', 'BPL': '60', 'BZ': '70', 'MOVE': '80', 'CMOV': '90', 'JR': 'A0',
     'HALT': 'FF', 'NOP': 'EF'
 }
 
@@ -17,8 +17,10 @@ REGISTERS = {
     '$0': '0', '$1': '1', '$2': '2', '$3': '3', '$4': '4',
     '$5': '5', '$6': '6', '$7': '7', '$8': '8', '$9': '9',
     '$A': 'A', '$B': 'B', '$C': 'C', '$D': 'D', '$E': 'E', '$F': 'F',
-    '$SP': 'E', '$FP': 'F'  # Stack pointer, function pointer aliasing
+    '$RA': 'B','$SP': 'E', '$FO': 'F' # aliasing
 }
+
+MULTI_OPS = {'LA':2, 'JAL':2}
 
 # Utility functions
 def to_hex(value, bits=4):
@@ -82,7 +84,13 @@ def first_pass(instructions):
             labels[label] = address_counter  # Record label address
         elif (instr.strip() != ''):
             instruction_memory.append(instr)
-            address_counter += 1  # Increment for each instruction
+            parts = instr.replace(',', '').split()  # Split instruction by spaces and remove commas
+            op = parts[0].upper()
+            
+            if op in MULTI_OPS.keys():
+                address_counter += MULTI_OPS[op]
+            else:
+                address_counter += 1  # Increment for each instruction
 
     return labels, instruction_memory
 
@@ -99,12 +107,42 @@ def assemble(instructions, data_labels):
         parts = instr.replace(',', '').split()  # Split instruction by spaces and remove commas
 
         op = parts[0].upper()
+        
+        if op=='LI':
+            rd = REGISTERS[parts[1].upper()]
+            imm = to_hex(int(parts[2]), 16)
+            instruction = f"1{ALU_OPS['ADD']}{rd}0{imm[:16]}"
+            
+        elif op=='NOT':
+            rd = REGISTERS[parts[1].upper()]
+            rs1 = REGISTERS[parts[2].upper()]
+            instruction = f"0{ALU_OPS['NOT']}{rd}{rs1}0000"
+        
+        elif op=='LA':
+            rd = REGISTERS[parts[1].upper()]
+            addr = parts[2]
+            if addr in data_labels:
+                addr = data_labels[addr]
+            else:
+                raise ValueError(f"Label {addr} not found.")
+    
+            imm = to_hex(int(addr), 32)
+            pseudo = f"1{ALU_OPS['LUI']}{rd}0{imm[:4]}"
+            machine_code.append(pseudo)
+            address_counter += 1
+            instruction = f"1{ALU_OPS['OR']}{rd}{rd}{imm[4:]}"
+        
+        elif op=='LUI':
+            alu_op = ALU_OPS[op]
+            rd = REGISTERS[parts[1].upper()]
+            imm = to_hex(int(parts[2]), 16)  # Immediate value
+            instruction = f"1{alu_op}{rd}0{imm}"
 
         # Handle ALUI (immediate version)
-        if op.endswith('I'):
+        elif op.endswith('I'):
             alu_op = ALU_OPS[op[:-1]]
             rd = REGISTERS[parts[1].upper()]
-            rs1 = REGISTERS[parts[2].upper()]  # Destination and source are the same
+            rs1 = REGISTERS[parts[2].upper()]  
             imm = to_hex(int(parts[3]), 16)  # Immediate value
             instruction = f"1{alu_op}{rd}{rs1}{imm}"
 
@@ -133,6 +171,25 @@ def assemble(instructions, data_labels):
                 
             instruction = f"{OP_CODES[op]}{rd}{REGISTERS[rs1.upper()]}{imm}"
 
+        elif op == 'JAL':
+            imm = to_hex(address_counter+2, 16)
+            pseudo = f"1{ALU_OPS['ADD']}{REGISTERS['$RA']}0{imm}"
+            machine_code.append(pseudo)
+            address_counter += 1
+            
+            label = parts[1]
+            if label in labels:
+                label_address = labels[label]
+                offset = label_address - (address_counter + 1)  # Offset relative to next instruction
+                imm = to_hex(offset, 16)
+                instruction = f"{OP_CODES['BR']}00{imm}"
+            else:
+                raise ValueError(f"Label {label} not found.")
+            
+        elif op == "JR":
+            rs1 = REGISTERS[parts[1].upper()]
+            instruction = f"{OP_CODES[op]}00{rs1}000"
+
         # Branch instructions (label-based)
         elif op in ['BR', 'BMI', 'BPL', 'BZ']:
             
@@ -153,7 +210,7 @@ def assemble(instructions, data_labels):
                     instruction = f"{OP_CODES[op]}0{rs1}{imm}" 
             else:
                 raise ValueError(f"Label {label} not found.")
-
+        
         # Move/Conditional Move instructions
         elif op == 'MOVE':
             rd = REGISTERS[parts[1].upper()]
@@ -230,6 +287,10 @@ def main():
         data_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
         for line in data_instructions:
             data_f.write(line.lower() + '\n')
+            
+        if len(data_instructions) == 0:
+            data_f.write('00000000\n')
+        
         data_f.write(';')
 
 if __name__ == '__main__':

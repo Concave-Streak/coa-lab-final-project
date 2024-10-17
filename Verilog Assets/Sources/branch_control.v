@@ -1,5 +1,5 @@
 module BranchControl (
-    input  [31:0] PC_plus_4,  // PC + 4 input
+    input  [31:0] PC_plus,  // PC + 4 input
     input  [31:0] A,          // Register A input (used for branch conditions)
     input  [31:0] B,          // Register B input (used for conditional move)
     input  [2:0]  BRANCH,     // 3-bit branch control line
@@ -13,6 +13,7 @@ module BranchControl (
     parameter BMI = 3'b010;  // Branch if A < 0 (negative)
     parameter BPL = 3'b011;  // Branch if A > 0 (positive)
     parameter BZ  = 3'b100;  // Branch if A == 0 (zero)
+    parameter JR = 3'b101;
 
     assign CMOV_out = (A>B) ? A : B;
 
@@ -24,6 +25,9 @@ module BranchControl (
 
     assign jump = (BRANCH!=NB) & condition;
     
-    assign NPC = (jump) ? PC_plus_4 + B : PC_plus_4;
+    wire [31:0] NPC_eff;
+    assign NPC_eff = (jump) ? PC_plus + B : PC_plus;
+    
+    assign NPC = (BRANCH==JR) ? B : NPC_eff;
 
 endmodule

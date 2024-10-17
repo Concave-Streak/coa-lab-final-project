@@ -27,7 +27,7 @@ module CPU_tb(
     reg clk, rst, continue;
     wire [31:0] debug;
     
-    CPU threadripper3990wx(clk, rst, continue, debug);
+    CPU threadripper3990wx(clk, rst, continue, pwr, halted, debug);
     
     initial begin
         clk = 0;

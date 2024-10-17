@@ -73,7 +73,7 @@ module _LUI #(parameter n = 8) (
     // First generate block: assign res[n-1:n/2] = A[n/2-1:0];
     generate
         for (i = 0; i < n/2; i = i + 1) begin : assign_upper_half
-            buf(res[n/2 + i], A[i]);
+            buf(res[n/2 + i], B[i]);
         end
     endgenerate
 
