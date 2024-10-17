@@ -38,7 +38,7 @@ module CPU_tb(
         #2
         rst = 0;
         
-        #10000
+        #1000
         $finish;
     end
     

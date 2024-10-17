@@ -15,11 +15,11 @@ module BranchControl (
     parameter BZ  = 3'b100;  // Branch if A == 0 (zero)
     parameter JR = 3'b101;
 
-    assign CMOV_out = (A>B) ? A : B;
+    assign CMOV_out = ($signed(A) < $signed(B)) ? A : B;
 
-    assign GT = (A > 0) ? 1 : 0;
-    assign LT = (A < 0) ? 1 : 0;
-    assign EQ = (A == 0) ? 1 : 0;
+    assign GT = ($signed(A) > 0) ? 1 : 0;
+    assign LT = ($signed(A) < 0) ? 1 : 0;
+    assign EQ = ($signed(A) == 0) ? 1 : 0;
 
     assign condition = (BRANCH == BR) || ((BRANCH == BMI) & LT) || ((BRANCH == BPL) & GT) || ((BRANCH == BZ) & EQ);
 

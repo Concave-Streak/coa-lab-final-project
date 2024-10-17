@@ -38,9 +38,8 @@ def parse_data_section(data_lines):
         if ':' not in line:
             continue
         
-        line = line.split('#')[0].strip()
         parts = line.split()
-        label = parts[0].replace(':', '')
+        label = parts[0].replace(':', '').strip()
         data_type = parts[1]
 
         if data_type == '.int':
@@ -103,7 +102,6 @@ def assemble(instructions, data_labels):
     address_counter = 0  # Reset address counter for final assembly
 
     for instr in instructions:
-        instr = instr.split('#')[0].strip()
         parts = instr.replace(',', '').split()  # Split instruction by spaces and remove commas
 
         op = parts[0].upper()
@@ -139,7 +137,7 @@ def assemble(instructions, data_labels):
             instruction = f"1{alu_op}{rd}0{imm}"
 
         # Handle ALUI (immediate version)
-        elif op.endswith('I'):
+        elif op.endswith('I') and op[:-1] in ALU_OPS:
             alu_op = ALU_OPS[op[:-1]]
             rd = REGISTERS[parts[1].upper()]
             rs1 = REGISTERS[parts[2].upper()]  
@@ -255,7 +253,7 @@ def main():
     is_data_section = False
 
     for line in assembly_program:
-        line = line.strip()
+        line = line.split('#')[0].strip()  # Remove comments
         if line == '.data':
             is_data_section = True
             continue

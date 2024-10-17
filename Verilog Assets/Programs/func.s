@@ -6,7 +6,9 @@ move $d $fo
 add $4 $1 $2
 halt
 
-func:
+#function below
+
+func: #expected arguments in r1 and r2, result in fo
     sub $fo $1 $2
     add $fo $1 $fo
     jr $ra
