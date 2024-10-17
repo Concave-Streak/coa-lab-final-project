@@ -1,10 +1,10 @@
 .data
 arguments: .arr {15,9}
 result:        .int 0      # Store result
+mem: .int 0     #temporary variables
 
 .text
 la $a arguments
-li $3 456
 jal booth_mul
 move $d $fo
 st $d result
@@ -12,7 +12,7 @@ halt
 
 booth_mul: #arguments expected in $a[1] and $a[2], result on fo
     #save register values
-    subi $sp $sp 5
+    subi $sp $sp 6
     st $ra 0($sp)
     st $1 1($sp)
     st $2 2($sp)
@@ -27,12 +27,12 @@ booth_mul: #arguments expected in $a[1] and $a[2], result on fo
     li $4 8            #4 = SC
 
     booth_loop:
-        srl $5 $2 $4 #Qn+1Qn in 5
+        andi $5 $2 0 #Qn+1Qn in 5
         bz $5 ashr
         subi $c $5 11
         bz $c ashr
 
-        subi $c $5 01
+        subi $c $5 10
         bz $c booth_sub
     booth_add:
         add $3 $3 $1
@@ -55,8 +55,8 @@ booth_mul: #arguments expected in $a[1] and $a[2], result on fo
         ld $3 3($sp)
         ld $4 4($sp)
         ld $5 5($sp)
-        addi $sp $sp 5
-        
+        addi $sp $sp 6
+
         jr $ra
 
 

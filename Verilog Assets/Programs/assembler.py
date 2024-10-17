@@ -105,7 +105,7 @@ def assemble(instructions, data_labels):
         parts = instr.replace(',', '').split()  # Split instruction by spaces and remove commas
 
         op = parts[0].upper()
-        
+            
         if op=='LI':
             rd = REGISTERS[parts[1].upper()]
             imm = to_hex(int(parts[2]), 16)
