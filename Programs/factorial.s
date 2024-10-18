@@ -3,7 +3,7 @@ args: .arr {0, 0}
 
 .text
 
-li $a 8
+li $a 12
 jal factorial
 move $d $fo
 halt
