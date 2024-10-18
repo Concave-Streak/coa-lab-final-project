@@ -32,6 +32,6 @@ module cpu_wrapper(
     );
     wire [31:0] debug, outdec;
     CPU EPYC_Rome(clk, reset, continue, pwr, halted, debug);
-    bin32_to_bcd(debug, outdec)
+    bin32_to_bcd(debug, outdec);
     seg_disp disp(outdec, clk, SEG, AN, DP);
 endmodule
