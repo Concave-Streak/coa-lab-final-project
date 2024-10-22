@@ -3,7 +3,7 @@ args: .arr {0, 0}
 
 .text
 
-li $a 12
+li $a 6
 jal factorial
 move $d $fo
 halt
@@ -38,7 +38,7 @@ factorial: #argument expected in $a, result in $fo
         jr $ra
 
 
-booth_mul: #arguments expected in 0($a) and 1($a), return value on $fo, overflow on $c
+booth_mul: #arguments expected in 0($a) and 1($a), return value on $fo
 
     subi $sp $sp 7
     st $ra 0($sp)

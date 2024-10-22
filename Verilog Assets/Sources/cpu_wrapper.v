@@ -21,7 +21,7 @@
 
 module cpu_wrapper(
     input clk,
-    input reset,
+    input nreset,
     input continue,
     output pwr,
     output halted,
@@ -29,8 +29,8 @@ module cpu_wrapper(
     output [7:0] AN,
     output DP
     );
-    wire [31:0] debug, outdec;
+    not n(reset, nreset);
+    wire [31:0] debug;
     CPU EPYC_Rome(clk, reset, continue, pwr, halted, debug);
-    bin32_to_bcd(debug, outdec);
-    seg_disp disp(outdec, clk, SEG, AN, DP);
+    seg_disp disp(debug, clk, SEG, AN, DP);
 endmodule

@@ -31,7 +31,7 @@ module ControlUnit_Fast (
 
     // FSM state definitions
     parameter FETCH  = 2'b00;
-    parameter DECODE = 2'b01;
+    //parameter DECODE = 2'b01;
     parameter EXECUTE = 2'b10;
     parameter WRITEBACK = 2'b11;
 
@@ -59,12 +59,8 @@ module ControlUnit_Fast (
         
         case (current_state)
             FETCH: begin
-                next_state = DECODE;  
-            end
-
-            DECODE: begin
-                next_state = EXECUTE;
-            end                     
+                next_state = EXECUTE;  
+            end                 
 
             EXECUTE: begin
                 //default values

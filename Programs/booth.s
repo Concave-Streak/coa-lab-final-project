@@ -9,7 +9,7 @@ move $d $fo
 st $d result
 halt
 
-booth_mul: #arguments expected in 0($a) and 1($a), return value on $fo, overflow on $c
+booth_mul: #arguments expected in 0($a) and 1($a), return value on $fo
 
     subi $sp $sp 7
     st $ra 0($sp)
