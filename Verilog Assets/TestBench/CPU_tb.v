@@ -26,8 +26,13 @@ module CPU_tb(
     
     reg clk, rst, continue;
     wire [31:0] debug;
+
+    wire MemEn, MemWen;       
+    wire [31:0] addr_out, data_in, data_out;
+    CPU threadripper3990wx(clk, rst, continue, pwr, halted, debug, MemEn, MemWen, addr_out, data_in, data_out);
+    data_mem gskill_tridentz(clk, addr_out, MemEn, MemWen, data_out, data_in);
+
     
-    CPU threadripper3990wx(clk, rst, continue, pwr, halted, debug);
     
     initial begin
         clk = 0;

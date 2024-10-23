@@ -31,6 +31,13 @@ module cpu_wrapper(
     );
     not n(reset, nreset);
     wire [31:0] debug;
-    CPU EPYC_Rome(clk, reset, continue, pwr, halted, debug);
+    
+    wire MemEn, MemWen;   
+    wire [31:0] addr_out, data_in, data_out;
+    
+    CPU EPYC_Rome(clk, reset, continue, pwr, halted, debug, MemEn, MemWen, addr_out, data_in, data_out);
+    
+    data_mem DM(clk, addr_out, MemEn, MemWen, data_out, data_in);
+    
     seg_disp disp(debug, clk, SEG, AN, DP);
 endmodule

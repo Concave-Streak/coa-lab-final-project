@@ -6,7 +6,7 @@ module data_mem(
     output [31:0] dout
 );
 
-    blk_mem_gen_0 gskill_ripjaw(
+    blk_mem_gen_0 BRAM(
         .douta(dout),
         .addra(addr[11:0]),
         .clka(clk),
@@ -23,7 +23,7 @@ module inst_mem(
     output [31:0] dout
 );
 
-    blk_mem_gen_1 samsung_990pro(
+    blk_mem_gen_1 BROM(
         .douta(dout),
         .addra(addr[11:0]),
         .clka(clk)

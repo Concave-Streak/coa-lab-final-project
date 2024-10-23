@@ -4,10 +4,14 @@ module CPU(
     input continue,
     output pwr,
     output halted,
-    output [31:0] debug
+    output [31:0] debug,
+    output MemEn, MemWen,
+    output [31:0] addr_out,
+    input [31:0] data_in,
+    output [31:0] data_out
     );
     
-    wire loadPC, writeReg, IMMsel, MemEn, MemWen;
+    wire loadPC, writeReg, IMMsel;
     wire [1:0] DataSel;
     wire [2:0] BRANCH;
     wire [31:0] NPC, PCout, PCinc, INS, rd_in, rs1_d, rs2_d, rd_d, imm, A, B, ALU_OUT, mem_data, CMOV;
@@ -28,7 +32,9 @@ module CPU(
     
     K_ALU_32 ALU(ALU_OUT, A, B, INS[27:24]);
     
-    data_mem DM(clk, ALU_OUT, MemEn, MemWen, rd_d, mem_data);
+    assign mem_data = data_in;
+    assign data_out = rd_d;
+    assign addr_out = ALU_OUT;
     
     wire [127:0] dataMUXin;
     assign dataMUXin = {32'd0, CMOV, mem_data, ALU_OUT};
