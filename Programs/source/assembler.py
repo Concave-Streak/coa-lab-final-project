@@ -1,4 +1,5 @@
 import sys
+import os
 import re
 
 # Instruction dictionaries to map mnemonics to hex codes
@@ -280,8 +281,11 @@ def assemble(instructions, data_labels, macro_dict):
 
 # Main function: Reads from a file and assembles it
 def main():
+    # Check for -npp (no preprocessing) flag
+    no_preprocessing = '-npp' in sys.argv
+    
     if len(sys.argv) < 2:
-        print("Usage: python assembler.py <input_file>")
+        print("Usage: python assembler.py <input_file> [-npp]")
         return
     
     input_file = sys.argv[1]
@@ -289,7 +293,22 @@ def main():
     # Read the input file
     with open(input_file, 'r') as f:
         assembly_program = f.readlines()
+    
+    if not no_preprocessing:
+        # Insert cmd_reg and data_reg at the beginning of the assembly program (only if preprocessing is enabled)
+        assembly_program.insert(0, "data_reg = 4097\n")
+        assembly_program.insert(0, "cmd_reg = 4096\n")
+        
+        # Append the content of all files in ./libs directory to the program (only if preprocessing is enabled)
+        libs_dir = './libs'
+        if os.path.exists(libs_dir) and os.path.isdir(libs_dir):
+            for lib_file in os.listdir(libs_dir):
+                lib_path = os.path.join(libs_dir, lib_file)
+                if os.path.isfile(lib_path):
+                    with open(lib_path, 'r') as lf:
+                        assembly_program += lf.readlines()
 
+    # Macro processing (if required)
     macro_dict, assembly_program = parse_macros(assembly_program)
     
     # Separate .data and .text sections
@@ -311,6 +330,9 @@ def main():
         else:
             text_section.append(line)
 
+    if not no_preprocessing:
+        # Append the heap at the end of the data section (only if preprocessing is enabled)
+        data_section.append('heap: .int 0')
    
     # Parse data section and get data labels and instructions
     data_labels, data_instructions = parse_data_section(data_section)
@@ -320,18 +342,17 @@ def main():
         
     # Write instruction .coe file
     with open("inst.coe", 'w') as out_f:
-         with open("inst.coe", 'w') as inst_f:
-            inst_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
-            for line in machine_code:
-                inst_f.write(line.lower() + '\n')
-            inst_f.write(';')
+        out_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
+        for line in machine_code:
+            out_f.write(line.lower() + '\n')
+        out_f.write(';')
 
     # Write data .coe file
     with open("data.coe", 'w') as data_f:
         data_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
         for line in data_instructions:
             data_f.write(line.lower() + '\n')
-            
+        
         if len(data_instructions) == 0:
             data_f.write('00000000\n')
         

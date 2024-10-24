@@ -1,35 +1,3 @@
-cmd_reg = 4096
-data_reg = 4097
-
-.data
-mystr: .str "Hello, World\n"
-greet: .str "Good Morning!\n"
-
-.text
-
-main:
-
-    la $a mystr
-    jal prints
-
-    la $a greet
-    jal prints
-
-    jal getchar
-    move $d $fo
-
-    move $a $d
-    jal printc
-
-    jal getint
-    move $d $fo
-
-    srai $a $d 1
-    jal printi
-
-    halt
-
-
 prints: #expects string pointer in $a
     ld $c 0($a)
     bz $c print_done

@@ -54,22 +54,9 @@ module CPU_tb(
         enable = 1'b0;
                       // Wait for some delay before starting transmission
         #10000; // Delay before starting transmission (~2ms)
-
-        // Start UART transmission after delay
-        data_to_send = 8'hA5;
-        bit_index = 4'b0; // Reset bit index
-        enable = 1'b1;
-        
-        #1000
-        data_to_send = 8'h35;
-        bit_index = 4'b0; // Reset bit index
-        enable = 1'b1;
+     
         #1000
         data_to_send = 8'h36;
-        bit_index = 4'b0; // Reset bit index
-        enable = 1'b1;
-        #1000
-        data_to_send = 8'h32;
         bit_index = 4'b0; // Reset bit index
         enable = 1'b1;
         #1000
