@@ -1,6 +1,7 @@
 .data
 prompt: .str "Enter a Number: "
 output: .str "The factorial is: " 
+nl: .str "\n"
 args: .arr {0, 0}
 
 .text
@@ -13,15 +14,18 @@ main:
 
     move $a $fo
     jal factorial
-    move $1 $fo
+    move $d $fo
 
     la $a output
     jal prints
 
-    move $a $1
+    move $a $d
     jal printi
 
-    halt
+    la $a nl
+    jal prints
+
+    br main
 
 
 factorial: #argument expected in $a, result in $fo

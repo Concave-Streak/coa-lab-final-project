@@ -30,13 +30,10 @@ module cpu_wrapper(
     output [6:0] SEG,
     output [7:0] AN,
     output DP
-    );
+    );    
     not n(reset, nreset);
     wire [31:0] debug;
-    
-    wire MemEn, MemWen;   
-    wire [31:0] addr_out, data_in, data_out;
-    
+
     SOC P(clk, reset, continue, pwr, halted, debug, tx, rx);
     
     seg_disp disp(debug, clk, SEG, AN, DP);

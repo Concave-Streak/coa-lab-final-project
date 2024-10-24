@@ -43,7 +43,7 @@ module UART_IO (
     reg [7:0] rx_data;       // Received byte
 
     // UART parameters (assuming 9600 baud, adjust accordingly)
-    localparam CLOCK_DIVIDE = 10; // Clock divider for 9600 baud with a 100MHz clock
+    localparam CLOCK_DIVIDE = 10416; // Clock divider for 9600 baud with a 100MHz clock
 
     // BCD conversion module instance
     wire [31:0] bcd_out;
