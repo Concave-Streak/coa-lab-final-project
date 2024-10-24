@@ -111,3 +111,17 @@ module sltgt_32 (input [31:0] A, input [31:0] B, output [31:0] outlt, output[31:
     endgenerate
         
 endmodule
+
+module tristate_buffer #(parameter n = 32) (
+    input [n-1:0] data_in,  // Data input to be placed on the bus
+    input enable,           // Enable signal for the tristate buffer
+    inout [n-1:0] bus       // Shared data bus (bidirectional)
+);
+    genvar i;
+    generate
+        for (i = 0; i < n; i = i + 1) begin : buf_gen
+            bufif1 (bus[i], data_in[i], enable);  // Buffer connection for placing data_in onto bus
+        end
+    endgenerate
+endmodule
+

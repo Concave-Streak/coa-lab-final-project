@@ -7,8 +7,8 @@ module CPU(
     output [31:0] debug,
     output MemEn, MemWen,
     output [31:0] addr_out,
-    input [31:0] data_in,
-    output [31:0] data_out
+    input [31:0] data_read,
+    output [31:0] data_write
     );
     
     wire loadPC, writeReg, IMMsel;
@@ -32,8 +32,8 @@ module CPU(
     
     K_ALU_32 ALU(ALU_OUT, A, B, INS[27:24]);
     
-    assign mem_data = data_in;
-    assign data_out = rd_d;
+    assign mem_data = data_read;
+    assign data_write = rd_d;
     assign addr_out = ALU_OUT;
     
     wire [127:0] dataMUXin;

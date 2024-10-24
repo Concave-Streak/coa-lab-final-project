@@ -158,6 +158,7 @@ module ControlUnit_Fast (
 
 
             WRITEBACK: begin
+                MemEn = 1;
                 writeReg = 1;
                 loadPC = 1;
                 next_state = FETCH; 

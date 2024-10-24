@@ -28,6 +28,31 @@ def to_hex(value, bits=4):
     """Converts an integer value to hex, padded to a given number of bits."""
     return f'{value & ((1 << bits) - 1):0{bits//4}X}'
 
+def parse_macros(file_lines):
+    """
+    Recognizes and strips macros of the form A = (some number) from the start of the file.
+    Returns a dictionary of macros and the remaining file lines.
+    """
+    macro_dict = {}
+    remaining_lines = []
+    macro_pattern = re.compile(r'^(\w+)\s*=\s*(\d+)\s*$')  # Regex pattern to match 'A = (number)'
+
+    for line in file_lines:
+        # Remove comments and strip leading/trailing whitespace
+        clean_line = line.split('#')[0].strip()
+        
+        # If the line matches the macro pattern, add to the dictionary
+        match = macro_pattern.match(clean_line)
+        if match:
+            macro_name = match.group(1)
+            macro_value = int(match.group(2))
+            macro_dict[macro_name] = macro_value
+        else:
+            # Stop processing macros when we encounter a non-macro line
+            remaining_lines.append(line)
+
+    return macro_dict, remaining_lines
+
 # Parse .data section
 import re
 
@@ -68,11 +93,15 @@ def parse_data_section(data_lines):
 
         elif data_type == '.str':
             # Use regex to match the entire string in quotes, preserving spaces
-            string = re.findall(r'".*"', line)[0].strip('"')
+            raw_string = re.findall(r'".*"', line)[0].strip('"')
+            # Decode escape sequences like \n, \t, etc.
+            string = raw_string.encode().decode('unicode_escape')
             data_memory[label] = memory_address
             for char in string:
                 data_instructions.append(to_hex(ord(char), 32))
                 memory_address += 1
+            data_instructions.append(to_hex(ord('\0'), 32))  # Null-terminate the string
+            memory_address += 1
 
     return data_memory, data_instructions
 
@@ -100,7 +129,7 @@ def first_pass(instructions):
     return labels, instruction_memory
 
 # Second pass: Assembling instructions
-def assemble(instructions, data_labels):
+def assemble(instructions, data_labels, macro_dict):
     """Takes a list of assembly instructions and outputs machine code in hex."""
     machine_code = []
     labels, instructions = first_pass(instructions)
@@ -127,6 +156,8 @@ def assemble(instructions, data_labels):
             addr = parts[2]
             if addr in data_labels:
                 addr = data_labels[addr]
+            elif addr in macro_dict:
+                addr = macro_dict[addr]
             else:
                 raise ValueError(f"Label {addr} not found.")
     
@@ -165,11 +196,13 @@ def assemble(instructions, data_labels):
                 offset, rs1 = parts[2].split('(')  # Get offset and register (e.g., 100($0))
                 rs1 = rs1.rstrip(')')
             else:
-                offset = data_labels[parts[2]]  # Access label in data
+                offset = parts[2]  # Access label in data
                 rs1 = '$0'  # Default to $0 if no register specified
             
             if offset in data_labels:
                 offset = data_labels[offset]
+            elif offset in macro_dict:
+                offset = macro_dict[offset]
                 
             imm = to_hex(int(offset), 16)  # Immediate offset value
                 
@@ -257,6 +290,8 @@ def main():
     with open(input_file, 'r') as f:
         assembly_program = f.readlines()
 
+    macro_dict, assembly_program = parse_macros(assembly_program)
+    
     # Separate .data and .text sections
     data_section = []
     text_section = []
@@ -276,11 +311,12 @@ def main():
         else:
             text_section.append(line)
 
+   
     # Parse data section and get data labels and instructions
     data_labels, data_instructions = parse_data_section(data_section)
 
     # Assemble instructions
-    machine_code = assemble(text_section, data_labels)
+    machine_code = assemble(text_section, data_labels, macro_dict)
         
     # Write instruction .coe file
     with open("inst.coe", 'w') as out_f:
