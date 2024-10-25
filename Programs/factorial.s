@@ -7,6 +7,12 @@ args: .arr {0, 0}
 .text
 
 main:
+
+    li $d 48
+
+    la $a prompt
+    jal prints
+
     la $a prompt
     jal prints
 
@@ -25,7 +31,7 @@ main:
     la $a nl
     jal prints
 
-    br main
+    halt
 
 
 factorial: #argument expected in $a, result in $fo

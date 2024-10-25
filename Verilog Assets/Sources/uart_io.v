@@ -1,16 +1,42 @@
+module IO_wrapper (
+    input clk,         // Clock signal
+    input rst_n,       // Active low reset
+    input [31:0] addr_bus,  // Address input from CPU
+    inout [31:0] data_bus,
+    input MemEn,    // Write enable signal from CPU
+    input MemWen,     // Read enable signal from CPU
+    output tx,          // UART transmit line
+    input rx,          // UART receive line
+    output busy         // Busy signal to indicate UART is transmitting or receiving
+);    
+    assign dins = MemEn & MemWen;
+    assign douts = MemEn & ~MemWen;
+    
+    wire [31:0] data_in, data_out;
+    tri_buff_out #32 tbd1(data_in, dins, data_bus);
+    tri_buff_in #32 tbd2(data_out, douts, data_bus);
+    
+    UART_IO iom(clk, rst_n, addr_bus[3:0], data_in, data_out, MemEn, MemWen, tx, rx, busy);
+
+endmodule
+
+
 module UART_IO (
     input wire clk,         // Clock signal
     input wire rst_n,       // Active low reset
     input wire [3:0] addr,  // Address input from CPU
     input wire [31:0] data_in,  // Data to be written by CPU
-    output reg [31:0] data_out, // Data to be read by CPU
-    input wire write_enable,    // Write enable signal from CPU
-    input wire read_enable,     // Read enable signal from CPU
+    output reg [31:0] data_out,
+    input wire MemEn,    // Write enable signal from CPU
+    input wire MemWen,     // Read enable signal from CPU
     output reg tx,          // UART transmit line
     input wire rx,          // UART receive line
     output reg busy         // Busy signal to indicate UART is transmitting or receiving
-);
-
+);    
+    wire write_enable, read_enable;
+    assign read_enable = MemEn & ~MemWen;
+    assign write_enable = MemEn & MemWen;
+    
     // Define register addresses
     localparam COMMAND_REG_ADDR = 1'h0;
     localparam DATA_REG_ADDR = 1'h1;

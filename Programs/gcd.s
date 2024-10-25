@@ -1,6 +1,7 @@
 .data
 num1:  .int 36 # First number
 num2:  .int 60 # Second number
+res: .int 0 # result
 
 .text
 ld $1 num1 # Load num1 into Register 1
@@ -20,5 +21,6 @@ less_than:
     br gcd_loop
 
 end:
-    move $d $1
+    st $1 res
+    ld $d res
     halt

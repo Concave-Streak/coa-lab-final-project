@@ -57,10 +57,9 @@ def parse_macros(file_lines):
 # Parse .data section
 import re
 
-def parse_data_section(data_lines):
+def parse_data_section(data_lines, global_address=0):
     """Parse the .data section and return a dictionary of data labels with memory locations."""
     data_memory = {}
-    memory_address = 0
     data_instructions = []
 
     for line in data_lines:
@@ -73,36 +72,36 @@ def parse_data_section(data_lines):
 
         if data_type == '.int':
             value = int(parts[2])
-            data_memory[label] = memory_address
+            data_memory[label] = global_address
             data_instructions.append(to_hex(value, 32))
-            memory_address += 1
+            global_address += 1
 
         elif data_type == '.arr':
             # Use regular expression to capture numbers inside braces, ignore spaces
             values = re.findall(r'{\s*([\d\s,]+)\s*}', line)[0]
             values = [v.strip() for v in values.split(',')]  # Strip whitespace and split by commas
-            data_memory[label] = memory_address
+            data_memory[label] = global_address
             for value in values:
                 data_instructions.append(to_hex(int(value), 32))
-                memory_address += 1
+                global_address += 1
 
         elif data_type == '.char':
             value = ord(parts[2].strip("'"))
-            data_memory[label] = memory_address
+            data_memory[label] = global_address
             data_instructions.append(to_hex(value, 32))
-            memory_address += 1
+            global_address += 1
 
         elif data_type == '.str':
             # Use regex to match the entire string in quotes, preserving spaces
             raw_string = re.findall(r'".*"', line)[0].strip('"')
             # Decode escape sequences like \n, \t, etc.
             string = raw_string.encode().decode('unicode_escape')
-            data_memory[label] = memory_address
+            data_memory[label] = global_address
             for char in string:
                 data_instructions.append(to_hex(ord(char), 32))
-                memory_address += 1
+                global_address += 1
             data_instructions.append(to_hex(ord('\0'), 32))  # Null-terminate the string
-            memory_address += 1
+            global_address += 1
 
     return data_memory, data_instructions
 
@@ -127,16 +126,13 @@ def first_pass(instructions):
             else:
                 address_counter += 1  # Increment for each instruction
 
-    return labels, instruction_memory
+    return labels, instruction_memory, address_counter
 
 # Second pass: Assembling instructions
-def assemble(instructions, data_labels, macro_dict):
+def assemble(instructions, labels, data_labels, macro_dict, global_address=0):
     """Takes a list of assembly instructions and outputs machine code in hex."""
     machine_code = []
-    labels, instructions = first_pass(instructions)
-
-    address_counter = 0  # Reset address counter for final assembly
-
+    
     for instr in instructions:
         parts = instr.replace(',', '').split()  # Split instruction by spaces and remove commas
 
@@ -165,7 +161,7 @@ def assemble(instructions, data_labels, macro_dict):
             imm = to_hex(int(addr), 32)
             pseudo = f"1{ALU_OPS['LUI']}{rd}0{imm[:4]}"
             machine_code.append(pseudo)
-            address_counter += 1
+            global_address += 1
             instruction = f"1{ALU_OPS['OR']}{rd}{rd}{imm[4:]}"
         
         elif op=='LUI':
@@ -210,15 +206,15 @@ def assemble(instructions, data_labels, macro_dict):
             instruction = f"{OP_CODES[op]}{rd}{REGISTERS[rs1.upper()]}{imm}"
 
         elif op == 'JAL':
-            imm = to_hex(address_counter+2, 16)
+            imm = to_hex(global_address+2, 16)
             pseudo = f"1{ALU_OPS['ADD']}{REGISTERS['$RA']}0{imm}"
             machine_code.append(pseudo)
-            address_counter += 1
+            global_address += 1
             
             label = parts[1]
             if label in labels:
                 label_address = labels[label]
-                offset = label_address - (address_counter + 1)  # Offset relative to next instruction
+                offset = label_address - (global_address + 1)  # Offset relative to next instruction
                 imm = to_hex(offset, 16)
                 instruction = f"{OP_CODES['BR']}00{imm}"
             else:
@@ -240,7 +236,7 @@ def assemble(instructions, data_labels, macro_dict):
             # Calculate branch offset
             if label in labels:
                 label_address = labels[label]
-                offset = label_address - (address_counter + 1)  # Offset relative to next instruction
+                offset = label_address - (global_address + 1)  # Offset relative to next instruction
                 imm = to_hex(offset, 16)
                 if op == 'BR':
                     instruction = f"{OP_CODES[op]}00{imm}"
@@ -275,7 +271,7 @@ def assemble(instructions, data_labels, macro_dict):
 
         # Add the instruction to machine code list
         machine_code.append(instruction)
-        address_counter += 1  # Increment address counter after each instruction
+        global_address += 1  # Increment address counter after each instruction
 
     return machine_code
 
@@ -283,6 +279,9 @@ def assemble(instructions, data_labels, macro_dict):
 def main():
     # Check for -npp (no preprocessing) flag
     no_preprocessing = '-npp' in sys.argv
+    raw = '-raw' in sys.argv
+    
+    ext = '.out' if raw else '.coe'
     
     if len(sys.argv) < 2:
         print("Usage: python assembler.py <input_file> [-npp]")
@@ -334,29 +333,28 @@ def main():
         # Append the heap at the end of the data section (only if preprocessing is enabled)
         data_section.append('heap: .int 0')
    
+    lables, text_section, global_address = first_pass(text_section)
+   
     # Parse data section and get data labels and instructions
-    data_labels, data_instructions = parse_data_section(data_section)
+    data_labels, data_instructions = parse_data_section(data_section, global_address)
 
     # Assemble instructions
-    machine_code = assemble(text_section, data_labels, macro_dict)
+    machine_code = assemble(text_section, lables, data_labels, macro_dict)
         
     # Write instruction .coe file
-    with open("inst.coe", 'w') as out_f:
-        out_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
+    with open(input_file.split('.')[0] + ext, 'w') as out_f:
+        
+        if not raw:
+            out_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
+        
         for line in machine_code:
             out_f.write(line.lower() + '\n')
-        out_f.write(';')
-
-    # Write data .coe file
-    with open("data.coe", 'w') as data_f:
-        data_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
+            
         for line in data_instructions:
-            data_f.write(line.lower() + '\n')
+            out_f.write(line.lower() + '\n')
         
-        if len(data_instructions) == 0:
-            data_f.write('00000000\n')
-        
-        data_f.write(';')
+        if not raw:
+            out_f.write(';')
 
 if __name__ == '__main__':
     main()

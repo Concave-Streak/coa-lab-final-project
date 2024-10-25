@@ -4,6 +4,7 @@ module ControlUnit_Fast (
     input continue,         // Continue signal (for halting)
     input  [3:0] op_code,   // 4-bit OP code
     output reg loadPC,      // Load Program Counter
+    output reg loadINS,
     output reg writeReg,    // Register Write Enable
     output reg MemEn,       // Memory Read/Write
     output reg MemWen,      // Memory Write Enable
@@ -31,7 +32,7 @@ module ControlUnit_Fast (
 
     // FSM state definitions
     parameter FETCH  = 2'b00;
-    //parameter DECODE = 2'b01;
+    parameter DECODE = 2'b01;
     parameter EXECUTE = 2'b10;
     parameter WRITEBACK = 2'b11;
 
@@ -56,9 +57,15 @@ module ControlUnit_Fast (
         MemWen = 0;
         pwr = 1;
         halted = 0;
+        loadINS = 0;
         
         case (current_state)
             FETCH: begin
+                next_state = DECODE;  
+            end
+            
+            DECODE: begin
+                loadINS = 1;
                 next_state = EXECUTE;  
             end                 
 
