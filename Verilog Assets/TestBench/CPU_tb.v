@@ -29,7 +29,7 @@ module CPU_tb(
     wire tx;
 
     // UART parameters
-    localparam CLOCK_DIVIDE = 10; // Clock divider for 9600 baud at 100MHz clock
+    localparam CLOCK_DIVIDE = 5; // Clock divider for 9600 baud at 100MHz clock
     reg [7:0] data_to_send;
     reg [3:0] bit_index;
     reg [13:0] baud_counter;
@@ -53,17 +53,52 @@ module CPU_tb(
         tx_reg = 1'b1; // Idle state of UART line is high
         enable = 1'b0;
                       // Wait for some delay before starting transmission
-        #10000; // Delay before starting transmission (~2ms)
+        #30000; // Delay before starting transmission (~2ms)
      
-        #1000
-        data_to_send = 8'h36;
+        data_to_send = 8'd49;
         bit_index = 4'b0; // Reset bit index
         enable = 1'b1;
-        #1000
-        data_to_send = 8'h0a;
+        #300
+        data_to_send = 8'd48;
         bit_index = 4'b0; // Reset bit index
         enable = 1'b1;
-        
+        #300
+        data_to_send = 8'd100;
+        bit_index = 4'b0; // Reset bit index
+        enable = 1'b1;
+        #300
+        data_to_send = 8'd48;
+        bit_index = 4'b0; // Reset bit index
+        enable = 1'b1;
+        #300
+        data_to_send = 8'd48;
+        bit_index = 4'b0; // Reset bit index
+        enable = 1'b1;
+        #300
+        data_to_send = 8'd48;
+        bit_index = 4'b0; // Reset bit index
+        enable = 1'b1;
+        #300
+        data_to_send = 8'd48;
+        bit_index = 4'b0; // Reset bit index
+        enable = 1'b1;
+        #300
+        data_to_send = 8'd53;
+        bit_index = 4'b0; // Reset bit index
+        enable = 1'b1;
+        #300
+        data_to_send = 8'd10;
+        bit_index = 4'b0; // Reset bit index
+        enable = 1'b1;
+        #3000
+        data_to_send = 8'd82;
+        bit_index = 4'b0; // Reset bit index
+        enable = 1'b1;
+        #300
+        data_to_send = 8'd10;
+        bit_index = 4'b0; // Reset bit index
+        enable = 1'b1;
+       
     end
     
     always begin

@@ -106,11 +106,10 @@ def parse_data_section(data_lines, global_address=0):
     return data_memory, data_instructions
 
 # First pass: Label handling and memory address assignment
-def first_pass(instructions):
+def first_pass(instructions, address_counter=0):
     """First pass: record the location of labels."""
     labels = {}
     instruction_memory = []
-    address_counter = 0  # Instruction address starts at 0
 
     for instr in instructions:
         if ':' in instr:  # It's a label
@@ -279,9 +278,8 @@ def assemble(instructions, labels, data_labels, macro_dict, global_address=0):
 def main():
     # Check for -npp (no preprocessing) flag
     no_preprocessing = '-npp' in sys.argv
-    raw = '-raw' in sys.argv
-    
-    ext = '.out' if raw else '.coe'
+    system = '-sys' in sys.argv   
+    ext = '.out' if not system else '.coe'
     
     if len(sys.argv) < 2:
         print("Usage: python assembler.py <input_file> [-npp]")
@@ -333,18 +331,18 @@ def main():
         # Append the heap at the end of the data section (only if preprocessing is enabled)
         data_section.append('heap: .int 0')
    
-    lables, text_section, global_address = first_pass(text_section)
+    lables, text_section, global_address = first_pass(text_section, 252)
    
     # Parse data section and get data labels and instructions
     data_labels, data_instructions = parse_data_section(data_section, global_address)
 
     # Assemble instructions
-    machine_code = assemble(text_section, lables, data_labels, macro_dict)
+    machine_code = assemble(text_section, lables, data_labels, macro_dict, 252)
         
     # Write instruction .coe file
-    with open(input_file.split('.')[0] + ext, 'w') as out_f:
+    with open(input_file.split('.')[0] + ext, 'w', newline='\n') as out_f:
         
-        if not raw:
+        if system:
             out_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
         
         for line in machine_code:
@@ -353,8 +351,10 @@ def main():
         for line in data_instructions:
             out_f.write(line.lower() + '\n')
         
-        if not raw:
+        if system:
             out_f.write(';')
 
 if __name__ == '__main__':
     main()
+
+local = 252

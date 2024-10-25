@@ -3,15 +3,11 @@ prompt: .str "Enter a Number: "
 output: .str "The factorial is: " 
 nl: .str "\n"
 args: .arr {0, 0}
+clear: .arr {27,91,50,74,27,91,72,0}
 
 .text
 
 main:
-
-    li $d 48
-
-    la $a prompt
-    jal prints
 
     la $a prompt
     jal prints
@@ -31,7 +27,10 @@ main:
     la $a nl
     jal prints
 
-    halt
+    la $a clear
+    jal prints
+
+    br main
 
 
 factorial: #argument expected in $a, result in $fo
