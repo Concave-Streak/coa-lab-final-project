@@ -278,7 +278,7 @@ def assemble(instructions, labels, data_labels, macro_dict, global_address=0):
 def main():
     # Check for -npp (no preprocessing) flag
     no_preprocessing = '-npp' in sys.argv
-    system = '-sys' in sys.argv   
+    system = True
     ext = '.out' if not system else '.coe'
     
     if len(sys.argv) < 2:
@@ -331,13 +331,13 @@ def main():
         # Append the heap at the end of the data section (only if preprocessing is enabled)
         data_section.append('heap: .int 0')
    
-    lables, text_section, global_address = first_pass(text_section, 257)
+    lables, text_section, global_address = first_pass(text_section)
    
     # Parse data section and get data labels and instructions
     data_labels, data_instructions = parse_data_section(data_section, global_address)
 
     # Assemble instructions
-    machine_code = assemble(text_section, lables, data_labels, macro_dict, 257)
+    machine_code = assemble(text_section, lables, data_labels, macro_dict)
         
     # Write instruction .coe file
     with open(input_file.split('.')[0] + ext, 'w', newline='\n') as out_f:

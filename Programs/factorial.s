@@ -8,23 +8,15 @@ clear: .arr {27,91,50,74,27,91,72,0}
 .text
 
 main:
-
-    li $d 16
-    
+   
     la $a prompt
     jal prints
 
-    li $d 32
-
     jal getint
-
-    li $d 48
 
     move $a $fo
     jal factorial
     move $d $fo
-
-    li $d 64
 
     la $a output
     jal prints
@@ -34,11 +26,6 @@ main:
 
     la $a nl
     jal prints
-
-    la $a clear
-    jal prints
-
-    li $d 80
 
     br main
 
