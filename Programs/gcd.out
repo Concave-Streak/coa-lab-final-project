@@ -1,7 +1,5 @@
-memory_initialization_radix=16;
-memory_initialization_vector=
-2010000d
-2020000e
+2010011c
+2020011d
 01c12000
 700c0006
 03c12000
@@ -10,10 +8,9 @@ memory_initialization_vector=
 4000fffa
 01221000
 4000fff8
-3010000f
-20d0000f
+3010011e
+20d0011e
 ff000000
 00000024
 0000003c
 00000000
-;

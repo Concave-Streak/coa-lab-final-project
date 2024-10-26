@@ -276,10 +276,6 @@ def assemble(instructions, labels, data_labels, macro_dict, global_address=0):
 
 # Main function: Reads from a file and assembles it
 def main():
-    # Check for -npp (no preprocessing) flag
-    no_preprocessing = '-npp' in sys.argv
-    system = '-sys' in sys.argv   
-    ext = '.out' if not system else '.coe'
     
     if len(sys.argv) < 2:
         print("Usage: python assembler.py <input_file> [-npp]")
@@ -290,20 +286,6 @@ def main():
     # Read the input file
     with open(input_file, 'r') as f:
         assembly_program = f.readlines()
-    
-    if not no_preprocessing:
-        # Insert cmd_reg and data_reg at the beginning of the assembly program (only if preprocessing is enabled)
-        assembly_program.insert(0, "data_reg = 4097\n")
-        assembly_program.insert(0, "cmd_reg = 4096\n")
-        
-        # Append the content of all files in ./libs directory to the program (only if preprocessing is enabled)
-        libs_dir = './libs'
-        if os.path.exists(libs_dir) and os.path.isdir(libs_dir):
-            for lib_file in os.listdir(libs_dir):
-                lib_path = os.path.join(libs_dir, lib_file)
-                if os.path.isfile(lib_path):
-                    with open(lib_path, 'r') as lf:
-                        assembly_program += lf.readlines()
 
     # Macro processing (if required)
     macro_dict, assembly_program = parse_macros(assembly_program)
@@ -326,33 +308,36 @@ def main():
             data_section.append(line)
         else:
             text_section.append(line)
-
-    if not no_preprocessing:
-        # Append the heap at the end of the data section (only if preprocessing is enabled)
-        data_section.append('heap: .int 0')
    
-    lables, text_section, global_address = first_pass(text_section, 252)
+    lables, text_section, global_address = first_pass(text_section)
    
     # Parse data section and get data labels and instructions
     data_labels, data_instructions = parse_data_section(data_section, global_address)
 
     # Assemble instructions
-    machine_code = assemble(text_section, lables, data_labels, macro_dict, 252)
+    machine_code = assemble(text_section, lables, data_labels, macro_dict)
+    
+    for lable in lables:
+        print(f"{lable}: {lables[lable]}")
         
     # Write instruction .coe file
-    with open(input_file.split('.')[0] + ext, 'w', newline='\n') as out_f:
+    with open(input_file.split('.')[0] + '.coe', 'w', newline='\n') as out_f:
         
-        if system:
-            out_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
+        counter = 0
+        
+        out_f.write("memory_initialization_radix=16;\nmemory_initialization_vector=\n")
         
         for line in machine_code:
+            counter+=1
             out_f.write(line.lower() + '\n')
             
         for line in data_instructions:
+            counter+=1
             out_f.write(line.lower() + '\n')
         
-        if system:
-            out_f.write(';')
+        print(counter)
+        
+        out_f.write(';')
 
 if __name__ == '__main__':
     main()
