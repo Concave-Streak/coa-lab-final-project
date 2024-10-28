@@ -27,7 +27,7 @@ main:
     la $a nl
     jal prints
 
-    br main
+    jr $0
 
 
 factorial: #argument expected in $a, result in $fo
