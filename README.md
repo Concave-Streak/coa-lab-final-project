@@ -45,8 +45,4 @@ The project includes an assembler and linker written in Python:
 - **Linker**: Links multiple object files and resolves labels for branches and jumps.
 - **Executable Format**: The output is a hexadecimal file that can be directly loaded into a memory buffer for execution by Dasmon.
 
-### Assembly Syntax
-Assembly code has `.data` and `.text` sections. Data definitions are sequentially placed in memory following instructions. Example definitions:
-```assembly
-myvar: .int 42
-mystr: .str "Hello, LO-RISC!"
+### For more information see LO-RISC Documentation
