@@ -1,51 +1,48 @@
 # LO-RISC: Learning Optimized Reduced Instruction Set Computer
 
-LO-RISC (Learning Optimized Reduced Instruction Set Computer) is a minimal Instruction Set Architecture (ISA) designed for speed, simplicity, and educational use. LO-RISC offers a reduced set of instructions, focusing on fast execution and ease of understanding, making it ideal for learning about computer architecture, assembly programming, and systems software development.
+**LO-RISC** (Learning Optimized Reduced Instruction Set Computer) is a minimal Instruction Set Architecture (ISA) developed for speed, simplicity, and educational purposes. Designed as a COA Lab Final Project by Raaja Das and Priyanshu Gaurav, LO-RISC emphasizes a streamlined, efficient approach to basic computation.
 
-This repository contains:
-1. The full implementation of the LO-RISC architecture.
-2. Supporting system software, including an assembler, linker, and basic runtime.
-
-## Table of Contents
+## Contents
 - [Project Overview](#project-overview)
 - [Features](#features)
 - [Architecture Details](#architecture-details)
+- [Software Components](#software-components)
+- [Dasmon System Monitor](#dasmon-system-monitor)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Usage](#usage)
-- [Assembler and System Software](#assembler-and-system-software)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Project Overview
-LO-RISC is designed as a lightweight ISA for students, educators, and enthusiasts exploring the fundamentals of computer architecture. It focuses on providing a minimal yet functional set of instructions to carry out basic computational tasks with high efficiency. This project is suitable for exploring:
-- Low-level programming concepts
-- The workings of a CPU
-- Assembly language and instruction set design
+LO-RISC is designed to be a simple and optimized architecture that can be used for educational and learning purposes. It includes the following:
+- A complete Verilog-based implementation of the CPU architecture
+- System software, including an assembler, linker, and runtime monitor
+- A minimal instruction set, facilitating a smooth learning curve for low-level computing concepts
 
 ## Features
-- **Minimal Instruction Set**: LO-RISC is built with simplicity in mind, with only essential instructions for arithmetic, logical operations, branching, and data manipulation.
-- **Lightweight Implementation**: The project includes a Verilog implementation of LO-RISC, designed for ease of understanding and modification.
-- **System Software**: Includes an assembler, linker, and basic runtime environment to support code generation and execution.
-- **Educational Focus**: The project is designed to illustrate fundamental concepts in CPU design and low-level programming.
+- **Minimalistic ISA**: A reduced instruction set, focusing on essential operations for arithmetic, logic, memory access, and branching.
+- **System Software**: Assembler and linker tools, enabling development in LO-RISC assembly.
+- **Dasmon System Monitor**: A custom runtime monitor inspired by Wozmon, supporting memory inspection, program loading, and execution.
+- **UART I/O Module**: Enables serial communication with external devices.
 
 ## Architecture Details
-LO-RISC follows a basic, efficient structure:
-- **Register File**: A small set of general-purpose registers for quick access.
-- **Instruction Types**: Arithmetic, logical, branch, load/store, and move instructions.
-- **Fixed Instruction Size**: Each instruction is a fixed 32-bit word, simplifying decoding and pipeline implementation.
+LO-RISC uses a Von Neumann architecture with shared instruction and data memory:
+- **Memory**: 4 KB of system memory accessible over a 32-bit address/data bus.
+- **Instruction Format**: Fixed 32-bit instructions, structured into 8, 4-bit hexadecimal fields, with various formats for immediate, branch, and register-based operations.
+- **Registers**: General-purpose registers, including `$a` for arguments and `$fo` for function output.
+- **Input/Output**: Serial communication is managed by a UART module at memory addresses 4096 and 4097.
 
-## Getting Started
-To get started with LO-RISC, you can either run the provided simulation environment (using Verilog simulators like ModelSim or Vivado) or deploy the design on an FPGA. 
+### Sample Instructions
+- **Arithmetic**: `ADD $1 $2 $3` (add registers `$2` and `$3`, store result in `$1`)
+- **Shift**: `SLAI $5 $7 1` (left shift `$7` by 1, store in `$5`)
+- **Load**: `LD $3 8($6)` (load from memory address `$6 + 8` into `$3`)
+- **Branch**: `BR #10` (jump by offset 10 from the current PC)
 
-### Prerequisites
-- **Verilog Simulator** (ModelSim, Vivado, or similar) for testing the Verilog code.
-- **Python 3.x** for running system software tools.
-- **Git** for cloning the repository.
+For a full list, refer to the [Instruction Set](#) section of the project documentation.
 
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/lo-risc.git
-   cd lo-risc
+## Software Components
+The project includes an assembler and linker written in Python:
+- **Assembler**: Converts LO-RISC assembly code into machine-readable binary.
+- **Linker**: Links multiple object files and resolves labels for branches and jumps.
+- **Executable Format**: The output is a hexadecimal file that can be directly loaded into a memory buffer for execution by Dasmon.
+
+### For more information see LO-RISC Documentation
