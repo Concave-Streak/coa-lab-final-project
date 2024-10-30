@@ -1,4 +1,6 @@
 .data
+space: .str " "
+nl: .str "\n"
 dividend: .int 100
 divisor: .int 2
 
@@ -10,10 +12,21 @@ divisor: .int 2
     move $3 $fo
 
     jal getint
-    ld $fo dividend($0)  # $4 = dividend (to be divided)
     # li $fo 0            # $fo = quotient
 
 loop:
+    move $a $fo
+    jal printi
+
+    la $a space
+    jal prints
+
+    move $a $1
+    jal printi
+
+    la $a nl
+    jal prints
+
     bz $2 endloop
 
     bmi $1 negCase1
