@@ -5,7 +5,11 @@ divisor: .int 2
 .text
     li $1 0             # $1 = accumulator
     li $2 31            # $2 = iteration count
-    ld $3 divisor($0)   # $3 = divisor (M)
+    
+    jal getint
+    move $3 $fo
+
+    jal getint
     ld $fo dividend($0)  # $4 = dividend (to be divided)
     # li $fo 0            # $fo = quotient
 
@@ -43,5 +47,10 @@ endloop:
     bmi $1 adjustRemainder
     adjustRemainder:
         add $1 $1 $3     # Adjust remainder if accumulator is negative
-    andi $fo $fo 2147483648
-    halt
+    slai $fo $fo 1
+    srli $fo $fo 1
+
+    move $a $fo
+    jal printi
+
+    jr $0
