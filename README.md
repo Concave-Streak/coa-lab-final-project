@@ -19,9 +19,10 @@ LO-RISC is a minimalistic Instruction Set Architecture (ISA) designed for simpli
 
 ### Prerequisites
 
-1. **Verilog Environment**: Required to simulate or deploy LO-RISC Verilog code.
-2. **Serial Terminal Software**: Tera Term or Minicom with configurations available in `Programs/system`.
-3. **Python 3.x**: To run the assembler for converting LO-RISC assembly into machine code.
+1. **Vivado or other suitable Verilog Environment**: Required to simulate and generate bitstream for LO-RISC Verilog code.
+2. **Nexys A7 or Nexys 4 DDR FPGA**: Required for deploying the LO-RISC CPU to actual hardware.
+3. **Serial Terminal Software**: Tera Term or Minicom. Recommended settings for Tera Term is available in `Programs/system`.
+4. **Python 3.x**: To run the assembler for converting LO-RISC assembly into machine code.
 
 ### Installation
 
@@ -30,18 +31,18 @@ LO-RISC is a minimalistic Instruction Set Architecture (ISA) designed for simpli
    git clone https://github.com/username/LO-RISC.git
    cd LO-RISC
    ```
+   
+3. Upload the bitsteam in `Programs/system/dasmon.bit` OR flash the binary `Programs/system/dasmon.bit` to the FPGA through Vivado.
 
-2. Set up a serial terminal software (e.g., Tera Term) and configure it to the recommended settings in `Programs/system`.
+4. Set up a serial terminal software (e.g., Tera Term) and configure it to the recommended settings in `Programs/system`.
+
+5. Dasmon welcome message shold be printed on the serial terminal after pressing the CPU reset button on the FPGA board.
 
 ### Usage
 
 1. **Assembly Code Compilation**:
    - Write LO-RISC assembly code in a `.s` file.
    - Run the assembler to compile your assembly file:
-     ```bash
-     ./asm program.s
-     ```
-     or
      ```bash
      python Programs/source/asm.py program.s
      ```
@@ -51,26 +52,6 @@ LO-RISC is a minimalistic Instruction Set Architecture (ISA) designed for simpli
    - Copy the machine code from `program.out` into the serial terminal to load it into the LO-RISC memory.
    - Press `Shift+R` in Dasmon to run the loaded program.
 
-3. **System Monitor (Dasmon)**:
-   - Run programs, inspect memory, and manage system state.
-   - Dasmon provides various subroutine calls for operations like character/decimal printing, integer multiplication, and I/O.
-
 ## Details
 
-### Instruction Set
-
-LO-RISC supports a concise set of instructions divided into the following categories:
-
-- **Arithmetic & Logic**: Basic operations like ADD, SUB, AND, OR, etc., with immediate addressing variations.
-- **Load & Store**: Supports register-indexed 32-bit load and store operations.
-- **Branching**: Branch instructions with conditional and unconditional jumps.
-- **Register Transfer**: MOVE and conditional move (CMOV) instructions for register-to-register transfers.
-- **Pseudo Instructions**: Includes pseudo instructions like `LA`, `LI`, and `JAL` for loading addresses, immediate values, and handling function calls.
-
-### Data Path
-
-The LO-RISC CPU uses a Von Neumann architecture with a shared memory model for instructions and data, supported by a 32-bit address/data bus and control signals for efficient component interconnect. A UART I/O module enables serial communication through reserved memory addresses, supporting ASCII and integer data exchange.
-
-### Dasmon System Monitor
-
-Dasmon, inspired by Wozmon, is a custom monitor software for the LO-RISC CPU, facilitating program loading and memory management. It supports subroutines for input and output operations, including ASCII character transmission, string handling, and integer operations.
+For a complete guide on the instruction set, data path, Assembly and Dasmon system monitor, please refer to the documentation provided in the LO-RISC.pdf file.
