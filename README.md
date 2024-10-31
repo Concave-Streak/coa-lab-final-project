@@ -1,6 +1,6 @@
 # LO-RISC: Learning Optimized Reduced Instruction Set Computer
 
-**LO-RISC** (Learning Optimized Reduced Instruction Set Computer) is a minimal Instruction Set Architecture (ISA) developed for speed, simplicity, and educational purposes. Designed as a COA Lab Final Project by Raaja Das and Priyanshu Gaurav, LO-RISC emphasizes a streamlined, efficient approach to basic computation.
+**LO-RISC** (Learning Optimized Reduced Instruction Set Computer) is a minimal Instruction Set Architecture (ISA) developed for speed, simplicity, and educational purposes. Designed as a COA Lab Final Project, LO-RISC emphasizes a streamlined, efficient approach to basic computation.
 
 ## Project Overview
 
