@@ -1,15 +1,41 @@
 .data
 space: .str " "
 nl: .str "\n"
-arguments: .arr {65, 387}
-result: .int 0                # Placeholder for result
+prompt: "enter dividend: "
+prompt2: "enter a divisor: "
+arguments: .arr {0, 0}
+result: "The quotient is: "
 
 .text
+la $a prompt
+jal prints
+
+jal getint
+move $1 $fo
+
+la $a prompt2
+jal prints
+
+jal getint
+move $2 $fo
+
 la $a arguments
+st $1 0($a)
+st $2 1($a)
+
 jal div_nres
 move $d $fo
-st $d result
-halt
+
+la $a result
+jal prints
+
+move $a $d
+jal printi
+
+la $a nl
+jal printi
+
+jr $0
 
 div_nres:               #arguments expected in 0($a) and 1($a), return value on $fo
 
@@ -27,19 +53,6 @@ div_nres:               #arguments expected in 0($a) and 1($a), return value on 
     li $2 31            # $2 = iteration count
 
 loop:
-    ####### debug
-    move $a $fo
-    jal printi          
-
-    la $a space
-    jal prints
-
-    move $a $1
-    jal printi
-
-    la $a nl
-    jal prints
-    ####### debug
 
     bz $2 endloop
 
@@ -79,9 +92,6 @@ endloop:
     slai $fo $fo 1
     srli $fo $fo 1
     
-
-    move $a $fo         # debug
-    jal printi          # debug
 
     ld $ra 0($sp)
     ld $1 1($sp)
