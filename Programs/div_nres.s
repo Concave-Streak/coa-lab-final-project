@@ -1,10 +1,10 @@
 .data
 space: .str " "
 nl: .str "\n"
-prompt: "enter dividend: "
-prompt2: "enter a divisor: "
+prompt: .str "enter dividend: "
+prompt2: .str "enter a divisor: "
 arguments: .arr {0, 0}
-result: "The quotient is: "
+result: .str "The quotient is: "
 
 .text
 la $a prompt
@@ -33,7 +33,7 @@ move $a $d
 jal printi
 
 la $a nl
-jal printi
+jal prints
 
 jr $0
 
